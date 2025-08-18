@@ -1,0 +1,136 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-03-18 14:42:39.787361",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "payment_type",
+  "posting_date",
+  "company",
+  "paid_from",
+  "paid_from_account_currency",
+  "paid_to",
+  "paid_to_account_currency",
+  "paid_amount",
+  "source_exchange_rate",
+  "base_paid_amount",
+  "received_amount",
+  "target_exchange_rate",
+  "base_received_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "payment_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Payment Type",
+   "options": "Receive\nPay\nInternal Transfer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Series",
+   "options": "ACC-PAY-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Data",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "paid_from",
+   "fieldtype": "Link",
+   "label": "Account Paid From",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "paid_from_account_currency",
+   "fieldtype": "Link",
+   "label": "Account Currency (From)",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "paid_to",
+   "fieldtype": "Link",
+   "label": "Account Paid To",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "paid_to_account_currency",
+   "fieldtype": "Link",
+   "label": "Account Currency (To)",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "paid_amount",
+   "fieldtype": "Currency",
+   "label": "Paid Amount",
+   "options": "paid_from_account_currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "source_exchange_rate",
+   "fieldtype": "Float",
+   "label": "Source Exchange Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "base_paid_amount",
+   "fieldtype": "Currency",
+   "label": "Paid Amount (Company Currency)",
+   "options": "Company:company:default_currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "received_amount",
+   "fieldtype": "Currency",
+   "label": "Received Amount",
+   "options": "paid_to_account_currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_exchange_rate",
+   "fieldtype": "Float",
+   "label": "Target Exchange Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "base_received_amount",
+   "fieldtype": "Currency",
+   "label": "Received Amount (Company Currency)",
+   "options": "Company:company:default_currency",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-18 16:02:09.275434",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Payment Entry Child Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

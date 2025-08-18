@@ -1,0 +1,257 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:full_name",
+ "creation": "2025-03-31 19:13:59.099787",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "last_name",
+  "full_name",
+  "guest_customer",
+  "guest_email",
+  "column_break_giao",
+  "first_name",
+  "gender",
+  "guest_phone_number",
+  "guest_preference",
+  "column_break_uqxn",
+  "middle_name",
+  "occupation",
+  "address",
+  "identity_information_section",
+  "id_type",
+  "id_number",
+  "expiry_date",
+  "column_break_jevp",
+  "country",
+  "state",
+  "column_break_cdiv",
+  "city",
+  "id_back",
+  "id_front",
+  "guest_nok_section",
+  "nok_name",
+  "nok_address",
+  "column_break_cxgv",
+  "relationship",
+  "nok_phone_number",
+  "column_break_shej",
+  "email",
+  "nok_country",
+  "guest_folio_tab",
+  "guest_folio"
+ ],
+ "fields": [
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Last Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "middle_name",
+   "fieldtype": "Data",
+   "label": "Middle Name"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "First Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_giao",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Link",
+   "label": "Gender",
+   "options": "Gender"
+  },
+  {
+   "fieldname": "occupation",
+   "fieldtype": "Data",
+   "label": "Occupation"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "identity_information_section",
+   "fieldtype": "Section Break",
+   "label": "Identity Information"
+  },
+  {
+   "fieldname": "id_type",
+   "fieldtype": "Select",
+   "label": "ID Type",
+   "options": "\nDriver Licence\nPassport\nState ID"
+  },
+  {
+   "fieldname": "id_number",
+   "fieldtype": "Int",
+   "label": "ID Number"
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "column_break_jevp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "id_back",
+   "fieldtype": "Attach",
+   "label": "ID Back "
+  },
+  {
+   "fieldname": "id_front",
+   "fieldtype": "Attach",
+   "label": "ID Front"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "guest_customer",
+   "fieldtype": "Link",
+   "label": "Guest Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "guest_phone_number",
+   "fieldtype": "Data",
+   "label": "Guest Phone Number"
+  },
+  {
+   "fieldname": "guest_email",
+   "fieldtype": "Data",
+   "label": "Guest Email",
+   "options": "Email"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "guest_nok_section",
+   "fieldtype": "Section Break",
+   "label": "Next Of Kin"
+  },
+  {
+   "fieldname": "nok_name",
+   "fieldtype": "Data",
+   "label": "Full Name"
+  },
+  {
+   "fieldname": "column_break_cxgv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "nok_phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "nok_address",
+   "fieldtype": "Data",
+   "label": "Address"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "nok_country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "relationship",
+   "fieldtype": "Data",
+   "label": "Relationship"
+  },
+  {
+   "fieldname": "guest_folio_tab",
+   "fieldtype": "Tab Break",
+   "label": "Guest Folio"
+  },
+  {
+   "fieldname": "guest_folio",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "column_break_uqxn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_cdiv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_shej",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "guest_preference",
+   "fieldtype": "Link",
+   "label": "Guest Preference",
+   "options": "Room"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-18 01:30:59.066663",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Hotel Guest",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

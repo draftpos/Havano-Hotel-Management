@@ -1,0 +1,216 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:room_number",
+ "creation": "2025-03-17 17:30:44.390214",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "room_number",
+  "room_name",
+  "room_type",
+  "room_item",
+  "status",
+  "current_checkin",
+  "company",
+  "column_break_puan",
+  "reservation",
+  "floor",
+  "checkout_status",
+  "current_guest",
+  "price_list",
+  "cost_center",
+  "column_break_gqiw",
+  "housekeeping_status",
+  "checkout_date",
+  "last_cleaned_date",
+  "price",
+  "title",
+  "section_break_ftgu",
+  "room_amenities",
+  "room_folio_tab",
+  "section_break_ivqb",
+  "room_folio"
+ ],
+ "fields": [
+  {
+   "fieldname": "room_number",
+   "fieldtype": "Data",
+   "label": "Room Number",
+   "unique": 1
+  },
+  {
+   "fieldname": "room_type",
+   "fieldtype": "Link",
+   "label": "Room Type",
+   "options": "Room Type"
+  },
+  {
+   "fieldname": "floor",
+   "fieldtype": "Link",
+   "label": "Floor",
+   "options": "Room Floor"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Available\nOccupied\nReserved",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_puan",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Rate"
+  },
+  {
+   "fieldname": "housekeeping_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "HouseKeeping Status",
+   "options": "Clean\nDirty\nOut of Order"
+  },
+  {
+   "depends_on": "eval: doc.status == \"Occupied\";",
+   "fieldname": "current_guest",
+   "fieldtype": "Link",
+   "label": "Current Guest",
+   "options": "Hotel Guest"
+  },
+  {
+   "fieldname": "last_cleaned_date",
+   "fieldtype": "Date",
+   "label": "Last Cleaned Date"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "room_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Room Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "current_checkin",
+   "fieldtype": "Link",
+   "label": "Current Checkin",
+   "options": "Check In",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "current_checkin.check_out_date",
+   "fieldname": "checkout_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Checkout Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "checkout_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Checkout Status",
+   "options": "\nOverdue"
+  },
+  {
+   "fieldname": "section_break_ftgu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "room_amenities",
+   "fieldtype": "Table",
+   "label": "Room Amenities",
+   "options": "Room Amenities"
+  },
+  {
+   "fieldname": "room_name",
+   "fieldtype": "Data",
+   "label": "Room Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Read Only",
+   "hidden": 1,
+   "label": "Title"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "default": "Standard Selling",
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "label": "Rate Type",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "reservation",
+   "fieldtype": "Link",
+   "label": "Reservation",
+   "options": "Reservation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_gqiw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_ivqb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "room_folio",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "room_folio_tab",
+   "fieldtype": "Tab Break",
+   "label": "Room Folio"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-03 22:43:14.544551",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Room",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "checkout_date",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title"
+}

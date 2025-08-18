@@ -1,0 +1,11 @@
+.kanban-column[data-column-value="Occupied"] .kanban-card-body{
+    background-color: lightpink;
+}
+
+.kanban-column[data-column-value="Available"] .kanban-card-body{
+    background-color: lightgreen;
+}
+
+.kanban-column[data-column-value="Reserved"] .kanban-card-body{
+    background-color: lightslategray;
+}

@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DF.#####",
+ "creation": "2025-03-17 15:06:38.847421",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reservation",
+  "guest",
+  "payment_transactions",
+  "balance"
+ ],
+ "fields": [
+  {
+   "fieldname": "reservation",
+   "fieldtype": "Link",
+   "label": "Reservation",
+   "options": "Reservation"
+  },
+  {
+   "fieldname": "guest",
+   "fieldtype": "Link",
+   "label": "Guest",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "payment_transactions",
+   "fieldtype": "Table",
+   "label": "Payment Transactions",
+   "options": "Payment Entry Child Table"
+  },
+  {
+   "fieldname": "balance",
+   "fieldtype": "Currency",
+   "label": "Balance"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-18 16:05:08.529374",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Desk Folio",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

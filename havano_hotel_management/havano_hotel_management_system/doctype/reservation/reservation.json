@@ -1,0 +1,240 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "RES.#####",
+ "creation": "2025-03-17 14:09:50.864026",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "is_group",
+  "section_break_ypvs",
+  "guest",
+  "room",
+  "venue",
+  "check_in_date",
+  "column_break_mtjo",
+  "reservation_type",
+  "check_out_date",
+  "check_in_time",
+  "column_break_kluu",
+  "business_source",
+  "nights",
+  "hours",
+  "transport_mode",
+  "amended_from",
+  "section_break_cmhl",
+  "company",
+  "project",
+  "column_break_ezgg",
+  "cost_center",
+  "country",
+  "section_break_czkw",
+  "guest_table",
+  "section_break_uzqe",
+  "special_requests"
+ ],
+ "fields": [
+  {
+   "depends_on": "eval: doc.is_group != 1",
+   "fieldname": "guest",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Guest",
+   "mandatory_depends_on": "eval: doc.is_group != 1",
+   "options": "Hotel Guest"
+  },
+  {
+   "default": "Now",
+   "depends_on": "eval: doc.is_group != 1",
+   "fieldname": "check_in_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Check in Date",
+   "mandatory_depends_on": "eval: doc.is_group != 1"
+  },
+  {
+   "depends_on": "eval: doc.is_group != 1",
+   "fieldname": "check_out_date",
+   "fieldtype": "Date",
+   "label": "Check out Date",
+   "mandatory_depends_on": "eval: doc.is_group != 1"
+  },
+  {
+   "default": "1",
+   "depends_on": "eval: doc.is_group != 1 && doc.reservation_type == \"Room\"",
+   "fieldname": "nights",
+   "fieldtype": "Int",
+   "label": "Nights"
+  },
+  {
+   "depends_on": "eval: doc.is_group != 1 && doc.reservation_type == \"Room\"",
+   "fieldname": "room",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Room",
+   "mandatory_depends_on": "eval: doc.is_group != 1 && doc.reservation_type == \"Room\"",
+   "options": "Room"
+  },
+  {
+   "fieldname": "special_requests",
+   "fieldtype": "Text",
+   "label": "Special Requests"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Reservation",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "depends_on": "eval: doc.is_group == 1",
+   "fieldname": "guest_table",
+   "fieldtype": "Table",
+   "label": "Guest Table",
+   "options": "Reservation Guest"
+  },
+  {
+   "fieldname": "section_break_czkw",
+   "fieldtype": "Section Break",
+   "label": "Reservation Form"
+  },
+  {
+   "fieldname": "section_break_uzqe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_mtjo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.reservation_type == \"Venue\"",
+   "fieldname": "venue",
+   "fieldtype": "Link",
+   "label": "Venue",
+   "mandatory_depends_on": "eval:doc.reservation_type == \"Venue\"",
+   "options": "Venue"
+  },
+  {
+   "depends_on": "eval:doc.reservation_type == \"Venue\"",
+   "fieldname": "check_in_time",
+   "fieldtype": "Time",
+   "label": "Check In Time"
+  },
+  {
+   "default": "1",
+   "depends_on": "eval:doc.reservation_type == \"Venue\"",
+   "fieldname": "hours",
+   "fieldtype": "Data",
+   "label": "Hours"
+  },
+  {
+   "fieldname": "reservation_type",
+   "fieldtype": "Select",
+   "label": "Reservation Type",
+   "options": "Room\nVenue"
+  },
+  {
+   "fieldname": "section_break_cmhl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "column_break_ezgg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "column_break_kluu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "business_source",
+   "fieldtype": "Link",
+   "label": "Business Source",
+   "options": "Business Source"
+  },
+  {
+   "fieldname": "section_break_ypvs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "transport_mode",
+   "fieldtype": "Link",
+   "label": "Transport Mode",
+   "options": "Transport Mode"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-05-07 09:47:15.431871",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Reservation",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "queue_in_background": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Blue",
+   "title": "Reserved"
+  },
+  {
+   "color": "Green",
+   "title": "Checked-In"
+  }
+ ],
+ "title_field": "guest",
+ "track_changes": 1
+}

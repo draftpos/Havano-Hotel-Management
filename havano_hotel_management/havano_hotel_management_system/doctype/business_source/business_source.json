@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:business_source",
+ "creation": "2025-05-07 09:29:23.340476",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "business_source"
+ ],
+ "fields": [
+  {
+   "fieldname": "business_source",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Business Source",
+   "reqd": 1,
+   "unique": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-07 09:29:51.894294",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Business Source",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

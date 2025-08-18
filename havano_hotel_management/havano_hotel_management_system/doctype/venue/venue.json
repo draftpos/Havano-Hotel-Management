@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:venue_name",
+ "creation": "2025-03-17 17:30:44.390214",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "venue_name",
+  "status",
+  "venue_item",
+  "price_list",
+  "current_booking",
+  "company",
+  "cost_center",
+  "maximum_capacity",
+  "column_break_puan",
+  "price",
+  "housekeeping_status",
+  "current_guest",
+  "last_cleaned_date",
+  "checkout_date",
+  "checkout_status",
+  "title",
+  "section_break_ftgu",
+  "venue_amenities"
+ ],
+ "fields": [
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Available\nOccupied\nReserved",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_puan",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Price"
+  },
+  {
+   "fieldname": "housekeeping_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "HouseKeeping Status",
+   "options": "Clean\nDirty\nOut of Order"
+  },
+  {
+   "depends_on": "eval: doc.status == \"Occupied\";",
+   "fieldname": "current_guest",
+   "fieldtype": "Link",
+   "label": "Current Guest",
+   "options": "Hotel Guest"
+  },
+  {
+   "fieldname": "last_cleaned_date",
+   "fieldtype": "Date",
+   "label": "Last Cleaned Date"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "venue_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Venue Item",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "current_checkin.check_out_date",
+   "fieldname": "checkout_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Checkout Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "checkout_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Checkout Status",
+   "options": "\nOverdue"
+  },
+  {
+   "fieldname": "section_break_ftgu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "venue_amenities",
+   "fieldtype": "Small Text",
+   "label": "Venue Amenities"
+  },
+  {
+   "fieldname": "venue_name",
+   "fieldtype": "Data",
+   "label": "Venue Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Read Only",
+   "label": "Title"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "label": "Rate Type",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "current_booking",
+   "fieldtype": "Link",
+   "label": "Current Booking",
+   "options": "Booking",
+   "read_only": 1
+  },
+  {
+   "fieldname": "maximum_capacity",
+   "fieldtype": "Int",
+   "label": "Maximum Capacity"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-04-28 09:40:32.493032",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Venue",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "checkout_date",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title"
+}

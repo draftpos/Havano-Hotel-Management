@@ -1,0 +1,297 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "BK.######",
+ "creation": "2025-03-25 08:19:57.703312",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "check_in_section",
+  "reservation",
+  "venue",
+  "guest_name",
+  "number_of_adults",
+  "number_of_children",
+  "sales_invoice_number",
+  "sales_invoice_status",
+  "payment_entry",
+  "balance_due",
+  "total_charge",
+  "column_break_otfx",
+  "check_in_by",
+  "check_in_date",
+  "check_in_time",
+  "hours",
+  "price_list",
+  "status",
+  "column_break_tupp",
+  "check_out_time",
+  "actual_checkout_date",
+  "amount_paid",
+  "company",
+  "project",
+  "price_list_rate",
+  "section_break_kabe",
+  "notes",
+  "column_break_toai",
+  "signature",
+  "amended_from",
+  "venue_folio_tab",
+  "general_ledger"
+ ],
+ "fields": [
+  {
+   "fieldname": "reservation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reservation",
+   "options": "Reservation"
+  },
+  {
+   "fetch_from": "reservation.guest",
+   "fieldname": "guest_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer Name ",
+   "no_copy": 1,
+   "options": "Hotel Guest",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fetch_from": "reservation.check_in_date",
+   "fieldname": "check_in_date",
+   "fieldtype": "Date",
+   "label": "Check In Date",
+   "no_copy": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_otfx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "check_in_by",
+   "fieldtype": "Link",
+   "label": "Check In By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "signature",
+   "fieldtype": "Signature",
+   "label": "Signature"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "sales_invoice_number",
+   "fieldtype": "Link",
+   "label": "Sales Invoice Number",
+   "no_copy": 1,
+   "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_kabe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "check_in_section",
+   "fieldtype": "Section Break",
+   "label": "Check In"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Booking",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.docstatus == 1",
+   "fieldname": "payment_entry",
+   "fieldtype": "Link",
+   "label": "Payment Entry",
+   "options": "Payment Entry",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "actual_checkout_date",
+   "fieldtype": "Datetime",
+   "label": "Actual Checkout Date",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_charge",
+   "fieldtype": "Currency",
+   "label": "Total Charge",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "balance_due",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Balance Due",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "payment_entry.paid_amount",
+   "fieldname": "amount_paid",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Amount Paid",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_toai",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "general_ledger",
+   "fieldtype": "HTML",
+   "label": "General Ledger"
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "venue.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "venue_folio_tab",
+   "fieldtype": "Tab Break",
+   "label": "Venue Folio"
+  },
+  {
+   "fetch_from": "venue.price_list",
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "label": "Rate Type",
+   "options": "Price List",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "venue.price",
+   "fieldname": "price_list_rate",
+   "fieldtype": "Currency",
+   "label": "Price",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "sales_invoice_status",
+   "fieldtype": "Data",
+   "label": "Sales Invoice Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "venue",
+   "fieldtype": "Link",
+   "label": "Venue",
+   "options": "Venue",
+   "reqd": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "check_in_time",
+   "fieldtype": "Time",
+   "label": "Check In Time",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "1",
+   "fieldname": "hours",
+   "fieldtype": "Data",
+   "label": "Hours",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "reservation.check_out_date",
+   "fieldname": "check_out_time",
+   "fieldtype": "Datetime",
+   "label": "Check Out Time",
+   "no_copy": 1,
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nBooked\nChecked Out",
+   "read_only": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "number_of_adults",
+   "fieldtype": "Int",
+   "label": "Number of Adults"
+  },
+  {
+   "fieldname": "number_of_children",
+   "fieldtype": "Int",
+   "label": "Number of Children"
+  },
+  {
+   "fieldname": "column_break_tupp",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-05-18 01:35:16.999598",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Booking",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Green",
+   "title": "Checked-In"
+  }
+ ]
+}

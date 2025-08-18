@@ -1,0 +1,70 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-17 15:25:03.985672",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "guest",
+  "room",
+  "desk_folio",
+  "transactions",
+  "room_folio_balance"
+ ],
+ "fields": [
+  {
+   "fieldname": "guest",
+   "fieldtype": "Link",
+   "label": "Guest",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "room",
+   "fieldtype": "Link",
+   "label": "Room",
+   "options": "Room"
+  },
+  {
+   "fieldname": "transactions",
+   "fieldtype": "Table",
+   "label": "Transactions",
+   "options": "Transactions Child Table"
+  },
+  {
+   "fieldname": "room_folio_balance",
+   "fieldtype": "Currency",
+   "label": "Room Folio Balance",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "desk_folio",
+   "fieldtype": "Link",
+   "label": "Desk Folio",
+   "options": "Desk Folio"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-18 09:40:39.451083",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Room Folio",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

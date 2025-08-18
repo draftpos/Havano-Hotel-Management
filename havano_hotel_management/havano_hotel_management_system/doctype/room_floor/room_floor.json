@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:room_floor",
+ "creation": "2025-04-10 23:31:18.508300",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "room_floor"
+ ],
+ "fields": [
+  {
+   "fieldname": "room_floor",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Room Floor",
+   "reqd": 1,
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-04-10 23:32:09.199249",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Room Floor",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

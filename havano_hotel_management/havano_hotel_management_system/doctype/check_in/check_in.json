@@ -1,0 +1,342 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "CIN.####",
+ "creation": "2025-03-25 08:19:57.703312",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "is_group_reservation",
+  "multiple_guests",
+  "check_in_section",
+  "reservation",
+  "guest_name",
+  "room",
+  "sales_invoice_number",
+  "sales_invoice_status",
+  "payment_entry",
+  "guest_vehicle",
+  "check_in_date",
+  "column_break_otfx",
+  "check_in_by",
+  "price_list",
+  "nights",
+  "total_charge",
+  "balance_due",
+  "number_of_adults",
+  "transport_mode",
+  "check_out_date",
+  "column_break_wyds",
+  "amount_paid",
+  "company",
+  "price_list_rate",
+  "country",
+  "number_of_children",
+  "season_type",
+  "actual_checkout_date",
+  "business_source",
+  "cost_center",
+  "section_break_vilh",
+  "other_guest",
+  "section_break_kabe",
+  "notes",
+  "column_break_toai",
+  "signature",
+  "amended_from",
+  "room_folio_tab",
+  "general_ledger"
+ ],
+ "fields": [
+  {
+   "fieldname": "reservation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reservation",
+   "options": "Reservation"
+  },
+  {
+   "fetch_from": "reservation.guest",
+   "fieldname": "guest_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Guest Name ",
+   "no_copy": 1,
+   "options": "Hotel Guest",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "reservation.room",
+   "fieldname": "room",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Room",
+   "no_copy": 1,
+   "options": "Room",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "reservation.check_in_date",
+   "fieldname": "check_in_date",
+   "fieldtype": "Datetime",
+   "label": "Check In Date",
+   "no_copy": 1,
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "reservation.check_out_date",
+   "fieldname": "check_out_date",
+   "fieldtype": "Date",
+   "label": "Check Out Date",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_otfx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "check_in_by",
+   "fieldtype": "Link",
+   "label": "Check In By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "signature",
+   "fieldtype": "Signature",
+   "label": "Signature"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "sales_invoice_number",
+   "fieldtype": "Link",
+   "label": "Sales Invoice Number",
+   "no_copy": 1,
+   "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_kabe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "check_in_section",
+   "fieldtype": "Section Break",
+   "label": "Check In"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Check In",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group_reservation",
+   "fieldtype": "Check",
+   "label": "Is Group Reservation"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.docstatus == 1",
+   "fieldname": "payment_entry",
+   "fieldtype": "Link",
+   "label": "Payment Entry",
+   "options": "Payment Entry",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "nights",
+   "fieldtype": "Data",
+   "label": "Nights"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "actual_checkout_date",
+   "fieldtype": "Datetime",
+   "label": "Actual Checkout Date",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_charge",
+   "fieldtype": "Currency",
+   "label": "Total Charge",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "balance_due",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Balance Due",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "payment_entry.paid_amount",
+   "fieldname": "amount_paid",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Amount Paid",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_toai",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "general_ledger",
+   "fieldtype": "HTML",
+   "label": "General Ledger"
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "room.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Hotel Name",
+   "options": "Company"
+  },
+  {
+   "fieldname": "room_folio_tab",
+   "fieldtype": "Tab Break",
+   "label": "Room Folio"
+  },
+  {
+   "fetch_from": "room.price_list",
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "label": "Rate Type",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "price_list_rate",
+   "fieldtype": "Currency",
+   "label": "Rate",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "UnPaid",
+   "fieldname": "sales_invoice_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "column_break_wyds",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "season_type",
+   "fieldtype": "Link",
+   "label": "Season Type",
+   "options": "Season Type"
+  },
+  {
+   "fieldname": "business_source",
+   "fieldtype": "Link",
+   "label": "Business Source",
+   "options": "Business Source"
+  },
+  {
+   "fieldname": "guest_vehicle",
+   "fieldtype": "Data",
+   "label": "Guest Vehicle"
+  },
+  {
+   "fieldname": "transport_mode",
+   "fieldtype": "Link",
+   "label": "Transport Mode",
+   "options": "Transport Mode"
+  },
+  {
+   "fieldname": "number_of_adults",
+   "fieldtype": "Int",
+   "label": "Number of Adults"
+  },
+  {
+   "fieldname": "number_of_children",
+   "fieldtype": "Int",
+   "label": "Number of Children"
+  },
+  {
+   "fieldname": "section_break_vilh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.multiple_guests == 1",
+   "fieldname": "other_guest",
+   "fieldtype": "Table",
+   "label": "Other Guests",
+   "options": "Reservation Guest"
+  },
+  {
+   "default": "0",
+   "fieldname": "multiple_guests",
+   "fieldtype": "Check",
+   "label": "Multiple Guests"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-05-07 18:08:11.142240",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Check In",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Green",
+   "title": "Checked-In"
+  }
+ ]
+}

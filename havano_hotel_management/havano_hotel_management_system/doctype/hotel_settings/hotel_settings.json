@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-03 14:12:24.891766",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "hotel_customer_group",
+  "hotel_item_group",
+  "default_check_out_time",
+  "permit_checkout_with_due",
+  "column_break_ezvn",
+  "allow_overbooking",
+  "allow_early_check_in__check_out_without_extra_cost",
+  "check_in_policy"
+ ],
+ "fields": [
+  {
+   "fieldname": "default_check_out_time",
+   "fieldtype": "Time",
+   "label": "Default Check Out Time"
+  },
+  {
+   "fieldname": "column_break_ezvn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_overbooking",
+   "fieldtype": "Check",
+   "label": "Allow Overbooking"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_early_check_in__check_out_without_extra_cost",
+   "fieldtype": "Check",
+   "label": "Allow Early Check In/Check Out without extra Cost"
+  },
+  {
+   "default": "0",
+   "fieldname": "permit_checkout_with_due",
+   "fieldtype": "Check",
+   "label": "Permit Check-Out with Due Balance"
+  },
+  {
+   "default": "Hotel Customers",
+   "fieldname": "hotel_customer_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Hotel Customer Group",
+   "options": "Customer Group",
+   "reqd": 1
+  },
+  {
+   "default": "Hotel Rooms",
+   "fieldname": "hotel_item_group",
+   "fieldtype": "Link",
+   "label": "Hotel Item Group",
+   "options": "Item Group",
+   "reqd": 1
+  },
+  {
+   "fieldname": "check_in_policy",
+   "fieldtype": "Small Text",
+   "label": "Check In policy"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-04-13 22:43:17.561740",
+ "modified_by": "Administrator",
+ "module": "Havano Hotel Management System",
+ "name": "Hotel Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
