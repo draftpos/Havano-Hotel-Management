@@ -158,6 +158,9 @@ doc_events = {
         # "validate": "havano_hotel_management.api.validate_booking",
         "on_submit": "havano_hotel_management.havano_hotel_management_system.doctype.booking.booking.create_sales_invoice"
     },
+    "Customer": {
+        "after_insert": "havano_hotel_management.api.create_hotel_guest_from_customer"
+    },
 }
 
 fixtures = [

@@ -1,5 +1,6 @@
 {
  "aggregate_function_based_on": "",
+ "background_color": "#775c91",
  "color": "#ffffff",
  "creation": "2025-04-04 21:19:25.443882",
  "docstatus": 0,
@@ -12,8 +13,8 @@
  "is_public": 1,
  "is_standard": 1,
  "label": "Rooms Reserved for Today",
- "modified": "2025-04-30 15:55:17.749338",
- "modified_by": "admin@gmail.com",
+ "modified": "2025-12-12 12:08:02.813420",
+ "modified_by": "Administrator",
  "module": "Havano Hotel Management System",
  "name": "Rooms Reserved for Today",
  "owner": "Administrator",

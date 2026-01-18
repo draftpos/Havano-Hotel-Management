@@ -565,3 +565,111 @@ def get_check_in_gl_entries(check_in):
         "data": data
     }
 
+
+def create_hotel_guest_from_customer(doc, method):
+    """
+    Hook function to create a Hotel Guest when a Customer is created
+    """
+    try:
+        # Check if a Hotel Guest already exists for this customer
+        existing_guest = frappe.db.exists("Hotel Guest", {"guest_customer": doc.name})
+        if existing_guest:
+            return  # Guest already exists, skip creation
+        
+        # Parse customer name to extract first and last name
+        customer_name = doc.customer_name or ""
+        name_parts = customer_name.strip().split()
+        
+        # Determine first name and last name
+        if len(name_parts) >= 2:
+            first_name = name_parts[0]
+            last_name = " ".join(name_parts[1:])  # Everything after first name
+        elif len(name_parts) == 1:
+            first_name = name_parts[0]
+            last_name = name_parts[0]  # Use same name if only one part
+        else:
+            first_name = customer_name
+            last_name = customer_name
+        
+        # Get customer email and phone from contact if available
+        guest_email = None
+        guest_phone = None
+        
+        # Try to get email and phone from customer's primary contact
+        if hasattr(doc, 'email_id') and doc.email_id:
+            guest_email = doc.email_id
+        if hasattr(doc, 'mobile_no') and doc.mobile_no:
+            guest_phone = doc.mobile_no
+        
+        # If not found in customer, try to get from linked contacts
+        if not guest_email or not guest_phone:
+            contacts = frappe.get_all(
+                "Dynamic Link",
+                filters={
+                    "link_doctype": "Customer",
+                    "link_name": doc.name,
+                    "parenttype": "Contact"
+                },
+                fields=["parent"]
+            )
+            
+            if contacts:
+                contact = frappe.get_doc("Contact", contacts[0].parent)
+                if not guest_email and contact.email_ids:
+                    guest_email = contact.email_ids[0].email_id
+                if not guest_phone and contact.phone_nos:
+                    guest_phone = contact.phone_nos[0].phone
+        
+        # Create Hotel Guest
+        # Construct full_name from first_name and last_name
+        full_name = f"{first_name} {last_name}".strip()
+        
+        guest_doc = frappe.get_doc({
+            "doctype": "Hotel Guest",
+            "first_name": first_name,
+            "last_name": last_name,
+            "full_name": full_name,
+            "guest_customer": doc.name,
+            "guest_email": guest_email,
+            "guest_phone_number": guest_phone,
+            "gender": doc.gender if hasattr(doc, 'gender') and doc.gender else None
+        })
+        
+        # Disable the before_insert hook to avoid creating another customer
+        guest_doc.flags.ignore_validate_guest_customer = True
+        guest_doc.insert(ignore_permissions=True)
+        
+        frappe.db.commit()
+        
+    except Exception as e:
+        # Log error but don't throw to avoid breaking customer creation
+        frappe.log_error(
+            message=f"Error creating Hotel Guest for Customer {doc.name}: {str(e)}\n{frappe.get_traceback()}",
+            title="Error Creating Hotel Guest from Customer"
+        )
+
+
+@frappe.whitelist()
+def get_payment_entry_for_check_in(sales_invoice, check_in):
+    """
+    Get payment entry for a sales invoice with check_in_reference pre-filled
+    """
+    try:
+        from erpnext.accounts.doctype.payment_entry.payment_entry import get_payment_entry
+        
+        # Get the payment entry document
+        payment_entry = get_payment_entry("Sales Invoice", sales_invoice)
+        
+        # Set the check_in_reference
+        payment_entry.check_in_reference = check_in
+        
+        # Return the document as a dict
+        return payment_entry.as_dict()
+    
+    except Exception as e:
+        frappe.log_error(
+            message=f"Error getting payment entry for Check In {check_in}: {str(e)}\n{frappe.get_traceback()}",
+            title="Error Getting Payment Entry"
+        )
+        frappe.throw(_("An error occurred while creating the Payment Entry. Please try again later."))
+

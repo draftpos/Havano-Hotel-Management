@@ -182,8 +182,7 @@
    "fieldname": "price_list",
    "fieldtype": "Link",
    "label": "Rate Type",
-   "options": "Price List",
-   "reqd": 1
+   "options": "Price List"
   },
   {
    "fetch_from": "venue.price",
@@ -263,7 +262,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-05-18 01:35:16.999598",
+ "modified": "2025-12-29 16:53:58.151165",
  "modified_by": "Administrator",
  "module": "Havano Hotel Management System",
  "name": "Booking",
@@ -286,6 +285,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [

@@ -1,5 +1,6 @@
 {
  "aggregate_function_based_on": "",
+ "background_color": "#775c91",
  "color": "#ffffff",
  "creation": "2025-04-04 21:17:28.888812",
  "docstatus": 0,
@@ -12,8 +13,8 @@
  "is_public": 1,
  "is_standard": 1,
  "label": "Total Rooms",
- "modified": "2025-04-30 15:55:17.691105",
- "modified_by": "admin@gmail.com",
+ "modified": "2025-12-12 12:08:02.761895",
+ "modified_by": "Administrator",
  "module": "Havano Hotel Management System",
  "name": "Total Rooms",
  "owner": "Administrator",

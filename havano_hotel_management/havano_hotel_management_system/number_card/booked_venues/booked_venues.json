@@ -1,5 +1,6 @@
 {
  "aggregate_function_based_on": "",
+ "background_color": "#0a781a",
  "color": "#ffffff",
  "creation": "2025-04-27 18:13:47.251000",
  "currency": "USD",
@@ -13,8 +14,8 @@
  "is_public": 1,
  "is_standard": 1,
  "label": "Booked Venues",
- "modified": "2025-04-30 15:54:59.341438",
- "modified_by": "admin@gmail.com",
+ "modified": "2025-12-12 12:09:28.980925",
+ "modified_by": "Administrator",
  "module": "Havano Hotel Management System",
  "name": "Booked Venues",
  "owner": "Administrator",

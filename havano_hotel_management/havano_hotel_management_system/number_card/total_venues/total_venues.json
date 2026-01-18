@@ -1,5 +1,6 @@
 {
  "aggregate_function_based_on": "",
+ "background_color": "#0a781a",
  "color": "#ffffff",
  "creation": "2025-04-27 18:11:48.486161",
  "currency": "USD",
@@ -13,8 +14,8 @@
  "is_public": 1,
  "is_standard": 1,
  "label": "Total Venues",
- "modified": "2025-04-30 15:54:59.360152",
- "modified_by": "admin@gmail.com",
+ "modified": "2025-12-12 12:09:28.932378",
+ "modified_by": "Administrator",
  "module": "Havano Hotel Management System",
  "name": "Total Venues",
  "owner": "Administrator",

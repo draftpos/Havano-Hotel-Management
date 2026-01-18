@@ -157,13 +157,13 @@ frappe.ui.form.on("Check In", {
                 extend_checkout_date(frm)
             }, __("Actions"))
         }
-        if(frm.doc.docstatus === 1 && !frm.doc.sales_invoice_status && frm.doc.sales_invoice_number) {
-
+        // Show Make Payment button only if status is Unpaid and document is submitted
+        if(frm.doc.docstatus == 1 && frm.doc.sales_invoice_status == "UnPaid" && frm.doc.sales_invoice_number) {
             frm.add_custom_button(__('Make Payment'), function() {
-                // make_payment(frm)
-                create_payment_for_sales_invoice(frm)
+                // create_payment_for_sales_invoice(frm)
+                make_payment(frm)
+                // create_payment_for_sales_invoice(frm, frm.doc.sales_invoice_number)
             }, __("Actions"))
-            
         }
         
         if(frm.doc.docstatus === 1 && frm.doc.sales_invoice_number) {
@@ -402,21 +402,19 @@ function extra_charges(frm) {
 
 
 function create_payment_for_sales_invoice(frm, sales_invoice_number, amount) {
-    // from a sales invoice including fetching the correct accounts and amounts
+    // Create payment entry from a sales invoice with check_in_reference pre-filled
     frappe.call({
-        method: "erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry",
+        method: "havano_hotel_management.api.get_payment_entry_for_check_in",
         args: {
-            dt: "Sales Invoice",
-            dn: frm.doc.sales_invoice_number,
-            bank_account: "", // Optional: specify a bank account
-            bank_amount: amount || 0,   // Optional: specify a custom amount, otherwise full amount will be used
-            custom_check_in_reference: frm.doc.name
+            sales_invoice: sales_invoice_number || frm.doc.sales_invoice_number,
+            check_in: frm.doc.name
         },
         callback: function(r) {
             if(r.message) {
                 var doc = frappe.model.sync(r.message)[0];
+                // Navigate to the Payment Entry form
                 frappe.set_route("Form", doc.doctype, doc.name);
-              }
+            }
         }
     });
 }
@@ -459,13 +457,14 @@ function make_payment(frm){
                 fieldname: 'payment_method',
                 fieldtype: 'Select',
                 options: 'Cash\nCredit Card\nDebit Card\nBank Transfer\nMobile Payment',
+                default: "Cash",
                 reqd: 1
             },
             {
                 label: __('Payment Amount'),
                 fieldname: 'amount',
                 fieldtype: 'Currency',
-                default: frm.doc.balance_due,
+                default: frm.doc.total_charge,
                 reqd: 1
             },
             {
@@ -478,12 +477,14 @@ function make_payment(frm){
             {
                 label: __('Reference Number'),
                 fieldname: 'reference_no',
-                fieldtype: 'Data'
+                fieldtype: 'Data',
+                default: frm.doc.name
             },
             {
                 label: __('Reference Date'),
                 fieldname: 'reference_date',
-                fieldtype: 'Date'
+                fieldtype: 'Date',
+                default: frappe.datetime.get_today()
             },
             {
                 label: __('Remarks'),

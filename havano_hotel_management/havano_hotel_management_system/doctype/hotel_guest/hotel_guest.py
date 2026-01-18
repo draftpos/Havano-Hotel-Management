@@ -8,12 +8,74 @@ from frappe import _
 
 class HotelGuest(Document):
 	def before_insert(self):
+		self.set_full_name()
 		self.validate_guest_customer()
 
+	def set_full_name(self):
+		"""Set full_name from first_name and last_name if not already set"""
+		if not self.full_name and self.first_name and self.last_name:
+			self.full_name = f"{self.first_name} {self.last_name}".strip()
+		elif not self.full_name and self.first_name:
+			self.full_name = self.first_name
 
 	def validate_guest_customer(self):
+		# Skip customer creation if guest is being created from a customer (to avoid circular creation)
+		if hasattr(self.flags, 'ignore_validate_guest_customer') and self.flags.ignore_validate_guest_customer:
+			return
 		if not self.guest_customer:
 			self.create_customer()
+
+	def get_default_warehouse_and_cost_center(self):
+		"""Get default warehouse and cost center from various sources"""
+		default_warehouse = None
+		default_cost_center = None
+		
+		# Try to get from User Permissions (if user is logged in)
+		user = frappe.session.user
+		if user and user != "Guest":
+			default_warehouse = frappe.db.get_value(
+				"User Permission",
+				{"user": user, "allow": "Warehouse", "is_default": 1},
+				"for_value"
+			)
+			default_cost_center = frappe.db.get_value(
+				"User Permission",
+				{"user": user, "allow": "Cost Center", "is_default": 1},
+				"for_value"
+			)
+		
+		# If not found, try to get from Company defaults
+		if not default_warehouse or not default_cost_center:
+			company = frappe.defaults.get_user_default("company") or frappe.db.get_single_value("Global Defaults", "default_company")
+			if company:
+				if not default_warehouse:
+					# Try to get default warehouse from company
+					default_warehouse = frappe.db.get_value("Company", company, "default_warehouse")
+				if not default_cost_center:
+					# Try to get default cost center from company
+					default_cost_center = frappe.db.get_value("Company", company, "cost_center")
+		
+		# If still not found, try to get from any existing customer
+		if not default_warehouse or not default_cost_center:
+			existing_customer = frappe.db.get_value(
+				"Customer",
+				{"custom_warehouse": ["!=", ""], "custom_cost_center": ["!=", ""]},
+				["custom_warehouse", "custom_cost_center"],
+				as_dict=True
+			)
+			if existing_customer:
+				if not default_warehouse:
+					default_warehouse = existing_customer.custom_warehouse
+				if not default_cost_center:
+					default_cost_center = existing_customer.custom_cost_center
+		
+		# If still not found, try to get any warehouse and cost center
+		if not default_warehouse:
+			default_warehouse = frappe.db.get_value("Warehouse", {"disabled": 0}, "name", order_by="creation desc")
+		if not default_cost_center:
+			default_cost_center = frappe.db.get_value("Cost Center", {"disabled": 0}, "name", order_by="creation desc")
+		
+		return default_warehouse, default_cost_center
 
 	def create_customer(self):
 		try:
@@ -21,13 +83,21 @@ class HotelGuest(Document):
 			# if not frappe.db.exists("Customer", {"customer_name": self.full_name}):
 				# Create a new Customer linked to the Hotel Guest
 			hotel_customer_group = frappe.db.get_single_value("Hotel Settings", "hotel_customer_group")
+			
+			# Get default warehouse and cost center
+			default_warehouse, default_cost_center = self.get_default_warehouse_and_cost_center()
+			
+			if not default_warehouse or not default_cost_center:
+				frappe.throw(_("Unable to determine default Warehouse and Cost Center. Please ensure these are configured in the system."))
 
 			new_customer = frappe.get_doc({
 				"doctype": "Customer",
 				"customer_name": self.full_name,
 				"customer_type": "Individual",
 				"customer_group": hotel_customer_group,
-				"territory": "All Territories"
+				"territory": "All Territories",
+				"custom_warehouse": default_warehouse,
+				"custom_cost_center": default_cost_center
 			})
 
 			# Save the new Customer
