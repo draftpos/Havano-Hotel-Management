@@ -116,9 +116,15 @@ class CheckIn(Document):
             # Get debit account
             debit_to = frappe.get_cached_value("Company", company, "default_receivable_account")
             
+            # Get the customer from the Hotel Guest
+            guest = frappe.get_doc("Hotel Guest", self.guest_name)
+            if not guest.guest_customer:
+                frappe.throw(_("No customer linked to guest {0}. Please ensure the guest has a customer.").format(self.guest_name))
+            customer = guest.guest_customer
+            
             # Create sales invoice
             si = frappe.new_doc("Sales Invoice")
-            si.customer = self.guest_name
+            si.customer = customer
             si.posting_date = self.check_in_date
             si.due_date = self.check_out_date
             si.company = company

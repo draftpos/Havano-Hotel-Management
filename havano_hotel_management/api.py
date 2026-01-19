@@ -26,6 +26,12 @@ def create_sales_invoice(doc, method=None, charge=0):
         # Get room details
         room = frappe.get_doc("Room", doc.room)
         
+        # Get the customer from the Hotel Guest
+        guest = frappe.get_doc("Hotel Guest", doc.guest_name)
+        if not guest.guest_customer:
+            frappe.throw(_("No customer linked to guest {0}. Please ensure the guest has a customer.").format(doc.guest_name))
+        customer = guest.guest_customer
+        
         # Get income account and cost center
         company = frappe.defaults.get_user_default("company")
         income_account = frappe.get_cached_value("Company", company, "default_income_account")
@@ -36,7 +42,7 @@ def create_sales_invoice(doc, method=None, charge=0):
         
         # Create sales invoice
         si = frappe.new_doc("Sales Invoice")
-        si.customer = doc.guest_name
+        si.customer = customer
         si.posting_date = doc.check_in_date
         si.due_date = doc.check_out_date
         si.company = company
@@ -113,6 +119,12 @@ def create_additional_sales_invoice_with_items(doc, method=None, charge=0):
         # Get room details
         room = frappe.get_doc("Room", doc.room)
         
+        # Get the customer from the Hotel Guest
+        guest = frappe.get_doc("Hotel Guest", doc.guest_name)
+        if not guest.guest_customer:
+            frappe.throw(_("No customer linked to guest {0}. Please ensure the guest has a customer.").format(doc.guest_name))
+        customer = guest.guest_customer
+        
         # Get income account and cost center
         company = frappe.defaults.get_user_default("company")
         income_account = frappe.get_cached_value("Company", company, "default_income_account")
@@ -123,7 +135,7 @@ def create_additional_sales_invoice_with_items(doc, method=None, charge=0):
         
         # Create sales invoice
         si = frappe.new_doc("Sales Invoice")
-        si.customer = doc.guest_name
+        si.customer = customer
         si.posting_date = doc.check_in_date
         si.due_date = doc.check_out_date
         si.company = company
