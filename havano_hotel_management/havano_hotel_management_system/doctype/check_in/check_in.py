@@ -6,6 +6,16 @@ from frappe.model.document import Document
 from frappe import _
 
 class CheckIn(Document):
+    def validate(self):
+        self.set_checkout_status()
+    
+    def set_checkout_status(self):
+        """Set checkout status based on actual_checkout_date"""
+        if self.actual_checkout_date:
+            self.checkout_status = "Out"
+        else:
+            self.checkout_status = "In"
+    
     # def before_submit(self):
     #     self.create_sales_invoice()
         # def on_submit(self):

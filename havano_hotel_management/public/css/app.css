@@ -9,3 +9,16 @@
 .kanban-column[data-column-value="Reserved"] .kanban-card-body{
     background-color: lightslategray;
 }
+
+/* Check In Checkout Status Styling */
+.list-row[data-checkout-status="Out"] .list-col[data-fieldname="checkout_status"] {
+    background-color: #007bff !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.list-row[data-checkout-status="In"] .list-col[data-fieldname="checkout_status"] {
+    background-color: #ff9800 !important;
+    color: white !important;
+    font-weight: 500;
+}

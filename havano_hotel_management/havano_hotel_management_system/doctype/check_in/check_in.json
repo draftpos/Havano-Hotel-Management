@@ -14,6 +14,7 @@
   "room",
   "sales_invoice_number",
   "sales_invoice_status",
+  "checkout_status",
   "payment_entry",
   "guest_vehicle",
   "check_in_date",
@@ -240,6 +241,16 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
+   "default": "In",
+   "fieldname": "checkout_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Checkout Status",
+   "options": "In\nOut",
+   "read_only": 1
+  },
+  {
    "fieldname": "country",
    "fieldtype": "Link",
    "label": "Country",
@@ -340,5 +351,6 @@
    "color": "Green",
    "title": "Checked-In"
   }
- ]
+ ],
+ "track_changes": 1
 }

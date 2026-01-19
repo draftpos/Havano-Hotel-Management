@@ -105,6 +105,7 @@ frappe.ui.form.on("Check Out", {
                         name: frm.doc.check_in,
                         fieldname: {
                             "actual_checkout_date": frm.doc.actual_check_out_time,
+                            "checkout_status": "Out"
                             // "total_charge": frm.doc.total_charges,
                             // "balance_due": frm.doc.balance_due
                         }
