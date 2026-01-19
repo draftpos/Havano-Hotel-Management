@@ -74,7 +74,24 @@ class HotelGuest(Document):
 			if not default_warehouse or not default_cost_center:
 				frappe.throw(_("Unable to determine default Warehouse and Cost Center. Please ensure these are configured in the system."))
 
-			new_customer = frappe.get_doc({
+			# Prepare customer VAT - truncate to 9 characters if longer
+			customer_vat = None
+			if self.customer_vat:
+				customer_vat = str(self.customer_vat)[:9]  # Truncate to max 9 characters
+			else:
+				# Check if the VAT field exists and is required
+				try:
+					customer_meta = frappe.get_meta("Customer")
+					vat_field = customer_meta.get_field("custom_customer_vat")
+					if vat_field and vat_field.reqd:
+						# Field is required but not set, use a default value
+						customer_vat = "000000000"  # Default 9-character value
+				except Exception:
+					# If we can't check the field, don't set it
+					pass
+
+			# Prepare customer data
+			customer_data = {
 				"doctype": "Customer",
 				"customer_name": self.full_name,
 				"customer_type": "Individual",
@@ -82,7 +99,17 @@ class HotelGuest(Document):
 				"territory": "All Territories",
 				"custom_warehouse": default_warehouse,
 				"custom_cost_center": default_cost_center
-			})
+			}
+			
+			# Add customer TIN if set
+			if self.customer_tin:
+				customer_data["custom_customer_tin"] = str(self.customer_tin)
+			
+			# Add customer VAT if set or required
+			if customer_vat:
+				customer_data["custom_customer_vat"] = customer_vat
+
+			new_customer = frappe.get_doc(customer_data)
 
 			# Save the new Customer
 			new_customer.insert(ignore_permissions=True)

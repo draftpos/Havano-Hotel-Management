@@ -624,6 +624,15 @@ def create_hotel_guest_from_customer(doc, method):
         # Construct full_name from first_name and last_name
         full_name = f"{first_name} {last_name}".strip()
         
+        # Get customer TIN and VAT if available
+        customer_tin = None
+        customer_vat = None
+        if hasattr(doc, 'custom_customer_tin') and doc.custom_customer_tin:
+            customer_tin = str(doc.custom_customer_tin)
+        if hasattr(doc, 'custom_customer_vat') and doc.custom_customer_vat:
+            # Truncate VAT to 9 characters if longer
+            customer_vat = str(doc.custom_customer_vat)[:9]
+        
         guest_doc = frappe.get_doc({
             "doctype": "Hotel Guest",
             "first_name": first_name,
@@ -632,7 +641,9 @@ def create_hotel_guest_from_customer(doc, method):
             "guest_customer": doc.name,
             "guest_email": guest_email,
             "guest_phone_number": guest_phone,
-            "gender": doc.gender if hasattr(doc, 'gender') and doc.gender else None
+            "gender": doc.gender if hasattr(doc, 'gender') and doc.gender else None,
+            "customer_tin": customer_tin,
+            "customer_vat": customer_vat
         })
         
         # Disable the before_insert hook to avoid creating another customer

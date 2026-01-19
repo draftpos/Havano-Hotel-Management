@@ -12,6 +12,8 @@
   "guest_email",
   "default_warehouse",
   "default_cost_center",
+  "customer_tin",
+  "customer_vat",
   "column_break_giao",
   "first_name",
   "gender",
@@ -172,6 +174,17 @@
    "fieldtype": "Link",
    "label": "Default Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "customer_tin",
+   "fieldtype": "Data",
+   "label": "Customer TIN"
+  },
+  {
+   "fieldname": "customer_vat",
+   "fieldtype": "Data",
+   "label": "Customer VAT",
+   "length": 9
   },
   {
    "collapsible": 1,
