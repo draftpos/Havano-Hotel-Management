@@ -12,6 +12,7 @@
   "reservation",
   "guest_name",
   "room",
+  "allow_overbooking",
   "sales_invoice_number",
   "sales_invoice_status",
   "checkout_status",
@@ -76,6 +77,12 @@
    "no_copy": 1,
    "options": "Room",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_overbooking",
+   "fieldtype": "Check",
+   "label": "Allow Overbooking"
   },
   {
    "fetch_from": "reservation.check_in_date",

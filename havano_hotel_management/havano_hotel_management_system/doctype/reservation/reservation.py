@@ -12,18 +12,26 @@ class Reservation(Document):
 
 
     def before_submit(self):
-        self.reserve_room()
-
-
-    def reserve_room(self):
+        # Don't reserve room immediately - only mark reservation reference
+        # Room will be reserved on check_in_date via cron job
         if self.room:
-            frappe.db.set_value("Room", self.room, "status", "Reserved")
-            frappe.db.set_value("Room", self.room, "reservation", self.name)
-
-            frappe.msgprint("Room Reserved")
+            frappe.db.set_value("Room", self.room, "reservation", self.name, update_modified=False)
         if self.venue:
             frappe.db.set_value("Venue", self.venue, "status", "Reserved")
             frappe.msgprint("Venue Reserved")
+    
+    def on_cancel(self):
+        """Make room available when reservation is cancelled"""
+        if self.room:
+            room = frappe.get_doc("Room", self.room)
+            # Only make available if status is Reserved (not Occupied) and reservation matches
+            if room.status == "Reserved" and room.reservation == self.name:
+                frappe.db.set_value("Room", self.room, "status", "Available", update_modified=False)
+                frappe.db.set_value("Room", self.room, "reservation", "", update_modified=False)
+                frappe.msgprint(_("Room {0} is now available").format(self.room))
+            elif room.reservation == self.name:
+                # Clear reservation reference even if status is not Reserved
+                frappe.db.set_value("Room", self.room, "reservation", "", update_modified=False)
 
     def validate_reservation(self):
         # Ensure check-in date is before check-out date

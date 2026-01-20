@@ -756,6 +756,78 @@ def update_check_in_balance_on_payment_entry_submit(doc, method):
 
 
 @frappe.whitelist()
+def update_room_statuses_from_reservations():
+    """
+    Cron job to update room statuses based on reservations
+    - Sets room to Reserved on check_in_date
+    - Makes room Available after check_out_date (if not occupied)
+    """
+    try:
+        from frappe.utils import getdate, today, now_datetime
+        
+        today_date = getdate(today())
+        current_datetime = now_datetime()
+        
+        # Get all submitted reservations
+        reservations = frappe.get_all(
+            "Reservation",
+            filters={"docstatus": 1},
+            fields=["name", "room", "check_in_date", "check_out_date"]
+        )
+        
+        updated_count = 0
+        
+        for reservation in reservations:
+            if not reservation.room:
+                continue
+                
+            room = frappe.get_doc("Room", reservation.room)
+            res_check_in = getdate(reservation.check_in_date) if reservation.check_in_date else None
+            res_check_out = getdate(reservation.check_out_date) if reservation.check_out_date else None
+            
+            # If check_in_date is today or earlier, set room to Reserved
+            if res_check_in and res_check_in <= today_date:
+                # Only set to Reserved if room is Available and reservation matches
+                if room.status == "Available" and room.reservation == reservation.name:
+                    frappe.db.set_value("Room", reservation.room, "status", "Reserved", update_modified=False)
+                    updated_count += 1
+            
+            # If check_out_date has passed and room is Reserved (not Occupied), make it Available
+            if res_check_out and res_check_out < today_date:
+                if room.status == "Reserved" and room.reservation == reservation.name:
+                    # Check if there's an active check-in for this room
+                    active_checkin = frappe.db.get_value(
+                        "Check In",
+                        {
+                            "room": reservation.room,
+                            "docstatus": 1,
+                            "actual_checkout_date": ["is", "not set"]
+                        },
+                        "name"
+                    )
+                    
+                    # Only make available if no active check-in
+                    if not active_checkin:
+                        frappe.db.set_value("Room", reservation.room, "status", "Available", update_modified=False)
+                        frappe.db.set_value("Room", reservation.room, "reservation", "", update_modified=False)
+                        updated_count += 1
+        
+        frappe.db.commit()
+        
+        if updated_count > 0:
+            frappe.logger().info(f"Updated {updated_count} room statuses from reservations")
+        
+        return {"updated": updated_count}
+        
+    except Exception as e:
+        frappe.log_error(
+            message=f"Error updating room statuses from reservations: {str(e)}\n{frappe.get_traceback()}",
+            title="Error in Reservation Room Status Update"
+        )
+        return {"error": str(e)}
+
+
+@frappe.whitelist()
 def get_payment_entry_for_check_in(sales_invoice, check_in):
     """
     Get payment entry for a sales invoice with check_in_reference pre-filled

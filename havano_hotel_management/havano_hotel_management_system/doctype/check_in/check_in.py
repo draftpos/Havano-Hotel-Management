@@ -8,6 +8,43 @@ from frappe import _
 class CheckIn(Document):
     def validate(self):
         self.set_checkout_status()
+        self.validate_room_availability()
+    
+    def validate_room_availability(self):
+        """Validate that room is not reserved for the check-in date"""
+        if not self.room or not self.check_in_date:
+            return
+        
+        from frappe.utils import getdate, today
+        
+        # Check if room is currently occupied
+        room_status = frappe.db.get_value("Room", self.room, "status")
+        if room_status == "Occupied":
+            frappe.throw(_("Room {0} is currently occupied. Please select another room.").format(self.room))
+        
+        # If allow_overbooking is checked, skip reservation validation
+        if self.allow_overbooking:
+            return
+        
+        # Check if room has a reservation for this date
+        reservation = frappe.db.get_value("Room", self.room, "reservation")
+        if reservation:
+            reservation_doc = frappe.get_doc("Reservation", reservation)
+            if reservation_doc.docstatus == 1:  # Only check submitted reservations
+                # Check if reservation dates overlap with check-in date
+                if reservation_doc.check_in_date and reservation_doc.check_out_date:
+                    check_in_date = getdate(self.check_in_date)
+                    res_check_in = getdate(reservation_doc.check_in_date)
+                    res_check_out = getdate(reservation_doc.check_out_date)
+                    
+                    # Check if check-in date falls within reservation period
+                    if res_check_in <= check_in_date < res_check_out:
+                        # Only throw error if this is not the same reservation
+                        if not self.reservation or self.reservation != reservation:
+                            frappe.throw(_("Room {0} is reserved for the selected check-in date ({1}). Please select another room or date, or enable 'Allow Overbooking' to proceed.").format(
+                                self.room, 
+                                frappe.format(self.check_in_date, {"fieldtype": "Date"})
+                            ))
     
     def on_submit(self):
         """Set balance_due to total_charge when Check In is submitted"""

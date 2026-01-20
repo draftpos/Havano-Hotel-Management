@@ -146,10 +146,6 @@ app_include_css = "/assets/havano_hotel_management/css/app.css"
 # }
 
 doc_events = {
-    # "Reservation": {
-        # "validate": "havano_hotel_management.api.validate_reservation",
-        # "after_insert": "havano_hotel_management.api.create_desk_folio"
-    # },
     "Check In": {
         # "validate": "havano_hotel_management.api.validate_check_in",
         "on_submit": "havano_hotel_management.api.create_sales_invoice"
@@ -174,6 +170,9 @@ scheduler_events = {
     "cron": {
         "*/30 * * * *": [
             "havano_hotel_management.havano_hotel_management_system.doctype.booking.booking.check_and_update_bookings"
+        ],
+        "daily": [
+            "havano_hotel_management.api.update_room_statuses_from_reservations"
         ]
     }
 }
