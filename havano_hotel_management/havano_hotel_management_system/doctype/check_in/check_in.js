@@ -31,18 +31,6 @@ frappe.ui.form.on("Check In", {
         });
 
     },
-    check_out_date: function(frm){
-        if(frm.doc.check_in_date && frm.doc.check_out_date) {
-            // Parse check_in_date as datetime
-            let check_in_date = moment(frm.doc.check_in_date);
-            let check_out_date = moment(frm.doc.check_out_date);
-            
-            let nights = check_out_date.startOf('day').diff(check_in_date.startOf('day'), 'days');
-            nights = Math.max(1, nights);
-            
-            frm.set_value("nights", nights);
-        }
-    },
     
     nights: function(frm) {
         if(frm.doc.check_in_date && frm.doc.nights) {
@@ -444,6 +432,27 @@ frappe.ui.form.on("Check In", {
         }
     },
     check_out_date: function(frm) {
+        console.log('check_out_date triggered:', frm.doc.check_in_date, frm.doc.check_out_date);
+        
+        // Calculate nights when check_out_date changes
+        if(frm.doc.check_in_date && frm.doc.check_out_date) {
+            // Extract just the date portion from check_in_date (datetime field)
+            // If check_in_date is "2025-01-01 14:30:00", extract "2025-01-01"
+            let check_in_date_str = frm.doc.check_in_date.split(' ')[0];
+            
+            // Parse both as dates for comparison (both should be date strings now)
+            let check_in_date = moment(check_in_date_str, 'YYYY-MM-DD');
+            let check_out_date = moment(frm.doc.check_out_date, 'YYYY-MM-DD');
+            console.log('Parsed dates:', check_in_date.format('YYYY-MM-DD'), check_out_date.format('YYYY-MM-DD'));
+            
+            // Calculate the difference in days
+            let nights = check_out_date.diff(check_in_date, 'days');
+            nights = Math.max(1, nights);
+            
+            console.log('Calculated nights:', nights);
+            frm.set_value("nights", nights);
+        }
+        
         // Update checkout status when check_out_date changes (only if not checked out)
         if (!frm.doc.actual_checkout_date && frm.doc.check_out_date) {
             let today = frappe.datetime.get_today();
