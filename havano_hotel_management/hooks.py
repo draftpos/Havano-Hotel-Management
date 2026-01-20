@@ -171,10 +171,11 @@ scheduler_events = {
         "*/30 * * * *": [
             "havano_hotel_management.havano_hotel_management_system.doctype.booking.booking.check_and_update_bookings"
         ],
-        "daily": [
-            "havano_hotel_management.api.update_room_statuses_from_reservations"
-        ]
-    }
+        
+    },
+    "daily": [
+        "havano_hotel_management.api.update_room_statuses_from_reservations"
+    ]
 }
 # scheduler_events = {
 # 	"all": [

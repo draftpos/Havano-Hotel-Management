@@ -222,7 +222,6 @@
    "write": 1
   }
  ],
- "queue_in_background": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [

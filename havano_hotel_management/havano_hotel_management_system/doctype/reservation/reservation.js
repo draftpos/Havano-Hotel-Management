@@ -57,41 +57,106 @@ function set_check_out_date(frm) {
         }
 }
 
-function create_payment(frm, amount) {
-    // from a sales invoice including fetching the correct accounts and amounts
-    // frappe.call({
-    //     method: "erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry",
-    //     args: {
-    //         dt: "Sales Invoice",
-    //         dn: frm.doc.sales_invoice_number,
-    //         bank_account: "", // Optional: specify a bank account
-    //         bank_amount: amount || 0,   // Optional: specify a custom amount, otherwise full amount will be used
-    //         custom_check_in_reference: frm.doc.name
-    //     },
-    //     callback: function(r) {
-    //         if(r.message) {
-    //             var doc = frappe.model.sync(r.message)[0];
-    //             frappe.set_route("Form", doc.doctype, doc.name);
-    //           }
-    //     }
-    // });
-    // Navigate to new Payment Entry form and set party
-    frappe.set_route("Form", "Payment Entry", "new").then(() => {
-    // Wait for the form to load
-    setTimeout(() => {
-        // Set party type (Customer, Supplier, Employee, etc.)
-        cur_frm.set_value("party_type", "Customer"); // Change to appropriate party type
-        
-        // Set the party
-        cur_frm.set_value("party", frm.doc.guest); // Replace with actual party ID
-        
-        // Optionally trigger the party field change to update dependent fields
-        cur_frm.script_manager.trigger("party");
-    }, 1000); // Give some time for the form to load
+function create_payment(frm) {
+    // Check if reservation has a sales invoice
+    let sales_invoice = frm.doc.sales_invoice_number || null;
+    
+    let d = new frappe.ui.Dialog({
+        title: __('Make Payment'),
+        fields: [
+            {
+                label: __('Sales Invoice'),
+                fieldname: 'sales_invoice',
+                fieldtype: 'Link',
+                options: 'Sales Invoice',
+                default: sales_invoice,
+                reqd: 0,
+                description: __('Optional: Select a sales invoice if payment is against an invoice')
+            },
+            {
+                label: __('Payment Method'),
+                fieldname: 'payment_method',
+                fieldtype: 'Select',
+                options: 'Cash\nCredit Card\nDebit Card\nBank Transfer\nMobile Payment',
+                default: "Cash",
+                reqd: 1
+            },
+            {
+                label: __('Payment Amount'),
+                fieldname: 'amount',
+                fieldtype: 'Currency',
+                reqd: 1
+            },
+            {
+                label: __('Payment Date'),
+                fieldname: 'payment_date',
+                fieldtype: 'Date',
+                default: frappe.datetime.get_today(),
+                reqd: 1
+            },
+            {
+                label: __('Reference Number'),
+                fieldname: 'reference_no',
+                fieldtype: 'Data',
+                default: frm.doc.name
+            },
+            {
+                label: __('Reference Date'),
+                fieldname: 'reference_date',
+                fieldtype: 'Date',
+                default: frappe.datetime.get_today()
+            },
+            {
+                label: __('Remarks'),
+                fieldname: 'remarks',
+                fieldtype: 'Small Text',
+                default: `Payment for Reservation ${frm.doc.name}`
+            }
+        ],
+        primary_action_label: __('Create Payment'),
+        primary_action: function(values) {
+            frappe.call({
+                method: 'havano_hotel_management.api.make_payment_entry_for_reservation',
+                args: {
+                    reservation: frm.doc.name,
+                    sales_invoice: values.sales_invoice,
+                    guest: frm.doc.guest,
+                    payment_method: values.payment_method,
+                    amount: values.amount,
+                    payment_date: values.payment_date,
+                    reference_no: values.reference_no,
+                    reference_date: values.reference_date,
+                    remarks: values.remarks
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frappe.show_alert({
+                            message: __('Payment Entry {0} created successfully', 
+                                ['<a href="/app/payment-entry/' + r.message + '">' + r.message + '</a>']),
+                            indicator: 'green'
+                        });
+                        // Reload to get updated payment information
+                        frm.reload_doc();
+                    }
+                }
+            });
+            d.hide();
+        }
     });
-
-
-    // frappe.set_route("Form", "Payment Entry", "new");
+    
+    // When sales invoice is selected, set the amount from outstanding amount
+    d.fields_dict.sales_invoice.df.onchange = function() {
+        const invoice = d.get_value('sales_invoice');
+        if (invoice) {
+            frappe.db.get_value('Sales Invoice', invoice, 'outstanding_amount', (r) => {
+                if (r && r.outstanding_amount) {
+                    d.set_value('amount', r.outstanding_amount);
+                }
+            });
+        }
+    };
+    
+    d.show();
 }
 
 

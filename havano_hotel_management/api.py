@@ -557,6 +557,83 @@ def get_payment_account(payment_method):
     # Fallback to getting a default account
     return frappe.get_value("Company", company, "default_cash_account")
 
+@frappe.whitelist()
+def make_payment_entry_for_reservation(reservation, guest, payment_method, amount, payment_date, sales_invoice=None, reference_no=None, reference_date=None, remarks=None):
+    """
+    Create a Payment Entry for a Reservation
+    Can work with or without a Sales Invoice
+    """
+    try:
+        # Get the reservation details
+        reservation_doc = frappe.get_doc("Reservation", reservation)
+        
+        # Get guest details to determine customer account
+        guest_doc = frappe.get_doc("Hotel Guest", guest)
+        customer = guest_doc.guest_customer if hasattr(guest_doc, 'guest_customer') and guest_doc.guest_customer else None
+        
+        if not customer:
+            frappe.throw(_("No customer linked to guest {0}. Please link a customer to the guest first.").format(guest))
+        
+        # Determine payment account based on payment method
+        payment_account = get_payment_account(payment_method)
+        
+        # Get customer's debtors account
+        company = reservation_doc.company or frappe.defaults.get_user_default("Company")
+        debtors_account = frappe.get_value("Company", company, "default_receivable_account")
+        if not debtors_account:
+            # Try to get from customer
+            if frappe.db.exists("Customer", customer):
+                customer_doc = frappe.get_doc("Customer", customer)
+                debtors_account = customer_doc.default_receivable_account or None
+        
+        if not debtors_account:
+            frappe.throw(_("Please set default receivable account for company {0} or customer {1}").format(company, customer))
+        
+        # Create a new Payment Entry
+        payment_entry = frappe.new_doc("Payment Entry")
+        payment_entry.payment_type = "Receive"
+        payment_entry.mode_of_payment = payment_method
+        payment_entry.party_type = "Customer"
+        payment_entry.party = customer
+        payment_entry.paid_from = debtors_account
+        payment_entry.paid_to = payment_account
+        payment_entry.paid_amount = float(amount)
+        payment_entry.received_amount = float(amount)
+        payment_entry.reference_no = reference_no
+        payment_entry.reference_date = reference_date
+        payment_entry.posting_date = payment_date
+        payment_entry.remarks = remarks or f"Payment for Reservation {reservation}"
+        
+        # If sales invoice is provided, add reference to it
+        if sales_invoice and frappe.db.exists("Sales Invoice", sales_invoice):
+            invoice = frappe.get_doc("Sales Invoice", sales_invoice)
+            payment_entry.append("references", {
+                "reference_doctype": "Sales Invoice",
+                "reference_name": invoice.name,
+                "total_amount": invoice.grand_total,
+                "outstanding_amount": invoice.outstanding_amount,
+                "allocated_amount": float(amount)
+            })
+            payment_entry.remarks = remarks or f"Payment against Sales Invoice {invoice.name} for Reservation {reservation}"
+        
+        # Set reservation reference if the field exists
+        if hasattr(payment_entry, 'reservation_reference'):
+            payment_entry.reservation_reference = reservation
+        
+        # Save and submit the payment entry
+        payment_entry.setup_party_account_field()
+        payment_entry.set_missing_values()
+        payment_entry.set_exchange_rate()
+        payment_entry.set_amounts()
+        payment_entry.save()
+        payment_entry.submit()
+        
+        return payment_entry.name
+    
+    except Exception as e:
+        frappe.log_error(f"Error creating payment entry for reservation: {str(e)}\n{frappe.get_traceback()}", "Reservation Payment Entry Creation Error")
+        frappe.throw(f"Error creating payment entry: {str(e)}")
+
 def update_check_in_payment_status(check_in_doc, invoice):
     """
     Update the check in document's payment status if needed

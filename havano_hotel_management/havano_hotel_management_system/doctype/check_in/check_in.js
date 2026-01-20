@@ -70,7 +70,7 @@ frappe.ui.form.on("Check In", {
     price_list: function(frm) {
         if(frm.doc.price_list && frm.doc.room) {
             // Get the item code from the room
-            frappe.db.get_value("Room", frm.doc.room, "room_item", function(room_data) {
+            frappe.db.get_value("Room", frm.doc.room, ["room_item", "price"], function(room_data) {
                 if(room_data && room_data.room_item) {
                     // Fetch the price list rate for the room's item
                     frappe.call({
@@ -95,13 +95,31 @@ frappe.ui.form.on("Check In", {
                                     frm.set_value("total_charge", total);
                                                                     }
                             } else {
-                                frappe.msgprint(__("No price found for this room in the selected price list. Please select a different price list or update the Room item price."));
-                                frm.set_value("price_list_rate", 0);
+                                // Fallback: use Room.price instead of clearing the rate
+                                if (room_data && room_data.price) {
+                                    frm.set_value("price_list_rate", room_data.price);
+                                    if(frm.doc.nights) {
+                                        let total = room_data.price * frm.doc.nights;
+                                        frm.set_value("total_charge", total);
+                                    }
+                                } else {
+                                    frappe.msgprint(__("No price found for this room in the selected price list, and no default room price is set. Please select a different price list or update the Room item price."));
+                                    frm.set_value("price_list_rate", 0);
+                                }
                             }
                         }
                     });
                 } else {
-                    frappe.msgprint(__("No item is linked to this room. Please link an item to the room first."));
+                    // If no item is linked, fallback to Room.price
+                    if (room_data && room_data.price) {
+                        frm.set_value("price_list_rate", room_data.price);
+                        if(frm.doc.nights) {
+                            let total = room_data.price * frm.doc.nights;
+                            frm.set_value("total_charge", total);
+                        }
+                    } else {
+                        frappe.msgprint(__("No item is linked to this room, and no default room price is set. Please link an item to the room or set a default room price."));
+                    }
                 }
             });
         }
@@ -343,7 +361,8 @@ frappe.ui.form.on("Check In", {
                 args: {
                     doctype: "Room",
                     filters: { name: frm.doc.room },
-                    fieldname: ["status", "room_item"]
+                    // include price for fallback rate calculation
+                    fieldname: ["status", "room_item", "price"]
                 },
                 callback: function(r) {
                     if(r.message && r.message.status !== "Available") {
