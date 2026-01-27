@@ -5,7 +5,7 @@
    "label": "Banquet"
   }
  ],
- "content": "[{\"id\":\"17uAjogr42\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Rooms\",\"col\":4}},{\"id\":\"y2q7gep0jL\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Available Rooms\",\"col\":4}},{\"id\":\"yTbuyg0UlY\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Rooms Occupied\",\"col\":4}},{\"id\":\"_ywat_MeC3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Rooms Reserved for Today\",\"col\":4}},{\"id\":\"l24eS6qZ-H\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Dirty Rooms\",\"col\":4}},{\"id\":\"ZLld_dtFPQ\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Overdue Out\",\"col\":4}},{\"id\":\"KaChbaobfX\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Venues\",\"col\":4}},{\"id\":\"8cxQsD7sLG\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Booked Venues\",\"col\":4}},{\"id\":\"v8MCzqvpNO\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Available Venues\",\"col\":4}},{\"id\":\"7I7Fp8vXoK\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"OverDue Banquets\",\"col\":4}},{\"id\":\"O2f1UyWf0A\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"R20GR9J-2O\",\"type\":\"card\",\"data\":{\"card_name\":\"Front Desk Operations\",\"col\":4}},{\"id\":\"2O1tvj0Ovs\",\"type\":\"card\",\"data\":{\"card_name\":\"Transactions\",\"col\":4}},{\"id\":\"kHRemfaKTJ\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"gyn0lh0hPq\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Banquet\",\"col\":12}},{\"id\":\"jxAJ1DEojE\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports and Masters</b></span>\",\"col\":12}},{\"id\":\"GZYaxl05t6\",\"type\":\"card\",\"data\":{\"card_name\":\"Folio\",\"col\":4}},{\"id\":\"geYCy2RKnt\",\"type\":\"card\",\"data\":{\"card_name\":\"Setup\",\"col\":4}}]",
+ "content": "[{\"id\":\"qZTi75vdgl\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"IjZj7aRCrw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotel Dashboard\",\"col\":3}},{\"id\":\"uA_Akcc24v\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"17uAjogr42\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Rooms\",\"col\":4}},{\"id\":\"y2q7gep0jL\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Available Rooms\",\"col\":4}},{\"id\":\"yTbuyg0UlY\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Rooms Occupied\",\"col\":4}},{\"id\":\"_ywat_MeC3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Rooms Reserved for Today\",\"col\":4}},{\"id\":\"l24eS6qZ-H\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Dirty Rooms\",\"col\":4}},{\"id\":\"ZLld_dtFPQ\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Overdue Out\",\"col\":4}},{\"id\":\"KaChbaobfX\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Venues\",\"col\":4}},{\"id\":\"8cxQsD7sLG\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Booked Venues\",\"col\":4}},{\"id\":\"v8MCzqvpNO\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Available Venues\",\"col\":4}},{\"id\":\"7I7Fp8vXoK\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"OverDue Banquets\",\"col\":4}},{\"id\":\"O2f1UyWf0A\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"R20GR9J-2O\",\"type\":\"card\",\"data\":{\"card_name\":\"Front Desk Operations\",\"col\":4}},{\"id\":\"2O1tvj0Ovs\",\"type\":\"card\",\"data\":{\"card_name\":\"Transactions\",\"col\":4}},{\"id\":\"kHRemfaKTJ\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"gyn0lh0hPq\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Banquet\",\"col\":12}},{\"id\":\"jxAJ1DEojE\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports and Masters</b></span>\",\"col\":12}},{\"id\":\"geYCy2RKnt\",\"type\":\"card\",\"data\":{\"card_name\":\"Setup\",\"col\":4}}]",
  "creation": "2025-03-23 11:12:26.199196",
  "custom_blocks": [],
  "docstatus": 0,
@@ -18,35 +18,6 @@
  "is_hidden": 0,
  "label": "Hotel Management",
  "links": [
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Folio",
-   "link_count": 2,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desk Folio",
-   "link_count": 0,
-   "link_to": "Desk Folio",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Room Folio",
-   "link_count": 0,
-   "link_to": "Room Folio",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
   {
    "hidden": 0,
    "is_query_report": 0,
@@ -122,67 +93,6 @@
    "link_count": 0,
    "link_to": "Stock Entry",
    "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Reports",
-   "link_count": 5,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Room Occupancy",
-   "link_count": 0,
-   "link_to": "Room Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Service Revenue Analysis",
-   "link_count": 0,
-   "link_to": "Service Revenue Analysis",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "POS Closing Report",
-   "link_count": 0,
-   "link_to": "POS Closing Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "report_ref_doctype": "Sales Invoice",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Guest Contact Report",
-   "link_count": 0,
-   "link_to": "Guest Contact Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "report_ref_doctype": "Customer",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Guest Ledger",
-   "link_count": 0,
-   "link_to": "Customer Ledger Summary",
-   "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   },
@@ -274,9 +184,49 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Room Occupancy",
+   "link_count": 0,
+   "link_to": "Room Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Guest Contact Report",
+   "link_count": 0,
+   "link_to": "Guest Contact Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Customer",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Guest Ledger",
+   "link_count": 0,
+   "link_to": "Customer Ledger Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2026-01-19 11:30:58.552292",
+ "modified": "2026-01-25 01:31:12.730170",
  "modified_by": "Administrator",
  "module": "Havano Hotel Management System",
  "name": "Hotel Management",
@@ -328,6 +278,14 @@
  "quick_lists": [],
  "roles": [],
  "sequence_id": 2.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Hotel Dashboard",
+   "link_to": "hotel-dashboard",
+   "type": "Page"
+  }
+ ],
  "title": "Hotel Management"
 }

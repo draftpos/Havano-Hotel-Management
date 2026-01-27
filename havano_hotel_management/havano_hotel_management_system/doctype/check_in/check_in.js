@@ -3,20 +3,31 @@
 
 frappe.ui.form.on("Check In", {
     setup: function(frm) {
+        // Check if room was passed from dashboard via sessionStorage
+        if (frm.is_new() && sessionStorage.getItem('check_in_room')) {
+            let room = sessionStorage.getItem('check_in_room');
+            let reservation = sessionStorage.getItem('check_in_reservation');
+            
+            // Set room field
+            frm.set_value("room", room);
+            
+            // Set reservation if exists
+            if (reservation) {
+                frm.set_value("reservation", reservation);
+            }
+            
+            // Clear sessionStorage after use
+            sessionStorage.removeItem('check_in_room');
+            sessionStorage.removeItem('check_in_reservation');
+        }
+        
         frm.set_query("room", function(doc) {
-            if (doc.reservation) {
-                return {
-                    "filters": {
-                        "status": ["!=", "Occupied"]
-                    }
-                };
-            }else{
-                return {
-                    "filters": {
-                        "status": "Available"
-                    }
-                };
-            }     
+            // Allow Available, Vacant, and Reserved rooms (exclude only Occupied)
+            return {
+                "filters": {
+                    "status": ["in", ["Available", "Vacant", "Reserved"]]
+                }
+            };
         });
 
         frm.set_query("reservation", function() {
@@ -112,6 +123,7 @@ frappe.ui.form.on("Check In", {
             });
         }
     },
+  
     validate: function(frm) {
         // We need to use a Promise to handle the asynchronous DB call
         if(frm.doc.room && frm.doc.nights) {
@@ -140,136 +152,12 @@ frappe.ui.form.on("Check In", {
 	refresh(frm) {
         general_ledger(frm);
         
-        // Auto-save functionality - set up on refresh
-        if (!frm.auto_save_setup) {
-            frm.auto_save_setup = true;
-            let auto_save_timeout = null;
-            let is_auto_saving = false;
-            let last_dirty_state = frm.is_dirty();
-
-            // Function to auto-save the document
-            function trigger_auto_save() {
-                // Clear existing timeout
-                if (auto_save_timeout) {
-                    clearTimeout(auto_save_timeout);
-                }
-
-                // Only auto-save if:
-                // 1. Document is not new (has been saved at least once)
-                // 2. Document has unsaved changes
-                // 3. Not already saving
-                if (frm.is_new() || !frm.is_dirty() || is_auto_saving) {
-                    return;
-                }
-
-                // Debounce: wait 2 seconds after last change before saving
-                auto_save_timeout = setTimeout(function() {
-                    if (frm.is_dirty() && !frm.is_new() && !is_auto_saving) {
-                        is_auto_saving = true;
-                        
-                        // Show auto-save indicator
-                        frappe.show_alert({
-                            message: __('Auto-saving...'),
-                            indicator: 'blue'
-                        }, 2);
-
-                        // Use "Update" for submitted documents, regular save for drafts
-                        let save_action = frm.doc.docstatus === 1 ? "Update" : null;
-                        
-                        // Save the document (works for both draft and submitted documents)
-                        frm.save(save_action, function() {
-                            is_auto_saving = false;
-                            last_dirty_state = frm.is_dirty();
-                            frappe.show_alert({
-                                message: __('Auto-saved'),
-                                indicator: 'green'
-                            }, 2);
-                        }).catch(function(error) {
-                            is_auto_saving = false;
-                            // Don't show error alert for auto-save failures to avoid interrupting user
-                            console.error('Auto-save failed:', error);
-                        });
-                    }
-                }, 2000); // 2 second delay
-            }
-
-            // Monitor form dirty state changes
-            let check_dirty_state = setInterval(function() {
-                if (frm.is_dirty() !== last_dirty_state) {
-                    last_dirty_state = frm.is_dirty();
-                    if (last_dirty_state) {
-                        trigger_auto_save();
-                    }
-                }
-            }, 500); // Check every 500ms
-
-            // Also listen to field changes by attaching to all input fields
-            frm.$wrapper.on('change', 'input, select, textarea', function() {
-                trigger_auto_save();
-            });
-
-            // Listen to child table changes
-            frm.$wrapper.on('grid-row-added grid-row-removed', function() {
-                trigger_auto_save();
-            });
-
-            // Clean up when form is unloaded
-            $(document).on('form-unload', function(e, unload_frm) {
-                if (unload_frm && unload_frm.docname === frm.docname && unload_frm.doctype === frm.doctype) {
-                    if (auto_save_timeout) {
-                        clearTimeout(auto_save_timeout);
-                    }
-                    if (check_dirty_state) {
-                        clearInterval(check_dirty_state);
-                    }
-                }
-            });
-        }
+        // Removed auto-save functionality to reduce unnecessary saves
+        // Users can manually save when needed
         
-        // Update checkout status based on actual_checkout_date
-        if (frm.doc.actual_checkout_date) {
-            frm.set_value("checkout_status", "Out");
-        } else if (frm.doc.check_out_date) {
-            // Check if overdue
-            let today = frappe.datetime.get_today();
-            if (frappe.datetime.str_to_obj(frm.doc.check_out_date) < frappe.datetime.str_to_obj(today)) {
-                frm.set_value("checkout_status", "Overdue");
-            } else {
-                frm.set_value("checkout_status", "In");
-            }
-        } else {
-            frm.set_value("checkout_status", "In");
-        }
-        
-        // Recalculate amount_paid and balance_due if document is submitted
-        if (frm.doc.docstatus === 1 && frm.doc.name) {
-            frappe.call({
-                method: "frappe.client.get_list",
-                args: {
-                    doctype: "Payment Entry",
-                    filters: {
-                        "check_in_reference": frm.doc.name,
-                        "docstatus": 1
-                    },
-                    fields: ["paid_amount"]
-                },
-                callback: function(r) {
-                    if (r.message) {
-                        let total_amount_paid = 0;
-                        r.message.forEach(function(pe) {
-                            total_amount_paid += parseFloat(pe.paid_amount || 0);
-                        });
-                        
-                        let balance_due = parseFloat(frm.doc.total_charge || 0) - total_amount_paid;
-                        
-                        if (frm.doc.amount_paid != total_amount_paid || frm.doc.balance_due != balance_due) {
-                            frm.set_value("amount_paid", total_amount_paid);
-                            frm.set_value("balance_due", balance_due);
-                        }
-                    }
-                }
-            });
-        }
+        // Payment fields (total_balance, amount_paid, balance_due, checkout_status) 
+        // are now calculated and set in Python (validate/on_update hooks)
+        // No need to fetch or set them in JavaScript
         
         if(frm.doc.docstatus === 1) {
             frm.set_df_property("nights", "read_only", 1);
@@ -353,7 +241,7 @@ frappe.ui.form.on("Check In", {
                     fieldname: ["status", "room_item", "price"]
                 },
                 callback: function(r) {
-                    if(r.message && r.message.status !== "Available") {
+                    if(r.message && r.message.status == "Occupied") {
                         frm.set_value("room", "");
                         frappe.msgprint(__("Room {0} is not available. Please select an available room.", [frm.doc.room]));
                     }else {
@@ -414,22 +302,8 @@ frappe.ui.form.on("Check In", {
         }
     },
     actual_checkout_date: function(frm) {
-        // Update checkout status when actual_checkout_date changes
-        if (frm.doc.actual_checkout_date) {
-            frm.set_value("checkout_status", "Out");
-        } else {
-            // Recalculate status if actual_checkout_date is cleared
-            if (frm.doc.check_out_date) {
-                let today = frappe.datetime.get_today();
-                if (frappe.datetime.str_to_obj(frm.doc.check_out_date) < frappe.datetime.str_to_obj(today)) {
-                    frm.set_value("checkout_status", "Overdue");
-                } else {
-                    frm.set_value("checkout_status", "In");
-                }
-            } else {
-                frm.set_value("checkout_status", "In");
-            }
-        }
+        // Checkout status is handled by Python validate/on_update hooks
+        // No need to set it here - will be updated on save
     },
     check_out_date: function(frm) {
         console.log('check_out_date triggered:', frm.doc.check_in_date, frm.doc.check_out_date);
@@ -453,43 +327,32 @@ frappe.ui.form.on("Check In", {
             frm.set_value("nights", nights);
         }
         
-        // Update checkout status when check_out_date changes (only if not checked out)
-        if (!frm.doc.actual_checkout_date && frm.doc.check_out_date) {
-            let today = frappe.datetime.get_today();
-            if (frappe.datetime.str_to_obj(frm.doc.check_out_date) < frappe.datetime.str_to_obj(today)) {
-                frm.set_value("checkout_status", "Overdue");
-            } else {
-                frm.set_value("checkout_status", "In");
-            }
-        }
+        // Checkout status is handled by Python validate/on_update hooks
+        // No need to set it here - will be updated on save
     },
     on_submit(frm){
-        frm.reload_doc()
-        frappe.call({
-            method: "frappe.client.set_value",
-            args: {
-                doctype: "Room",
-                name: frm.doc.room,
-                fieldname: {
-                    // "status": "Occupied",
-                    "current_checkin": frm.doc.name
+        // Room update is handled in Python hook (create_sales_invoice in api.py)
+        // Check Out is NEVER created automatically - only when user clicks "Check out" button
+        // Just reload to get updated data
+        frm.reload_doc().then(function() {
+            // Sales invoice is created via hook, wait a moment for it to be set
+            setTimeout(function() {
+                if (frm.doc.sales_invoice_number) {
+                    frappe.confirm(
+                        __('Do you want to make payment for this check-in?'),
+                        function() {
+                            make_payment(frm);
+                        }
+                    );
                 }
-            },
-            callback: function(r) {
-                if (r.message) {
-                    frappe.show_alert({
-                        message: __("Current Checkin Updated in Room"),
-                        indicator: 'green'
-                    });
-                }
-            }
+            }, 1500);
         });
     }
 });
 
 
 async function checkout(frm) {
-    // Confirm checkout
+    // Check if checkout already exists
     frappe.call({
         method: "frappe.client.get_list",
         args: {
@@ -499,73 +362,149 @@ async function checkout(frm) {
             },
             fields: ["name"]
         },
-        callback: function(r) {
+        callback: async function(r) {
             if (r.message && r.message.length > 0) {
                 frappe.msgprint(__("Check out already exists for this check-in."));
                 return;
-            }else{
-                frappe.confirm(
-                    __('Are you sure you want to check out this guest?'),
-                    async function() {
-                        const dtime = await frappe.db.get_single_value('Hotel Settings', 'default_check_out_time')
-                        let checkout_date;
-                        if(!dtime){
-                            checkout_date = frm.doc.check_out_date;
-                        }else{
-                            checkout_date = moment(frm.doc.check_out_date+ " " + dtime).format("YYYY-MM-DD HH:mm:ss");
-                        }
-                   
-                        // Set checkout date to today
-                        
-                        // Update the current check-in document with checkout date
-                        
-
-                        // Calculate number of days
-                        let check_in_date = moment(frm.doc.check_in_date);
-                        let check_out_date = moment(checkout_date);
-                        let days = Math.max(1, check_out_date.diff(check_in_date, 'days'));
-                        
-                        // Get room rate
-                        frappe.call({
-                            method: "frappe.client.get_value",
-                            args: {
-                                doctype: "Room",
-                                filters: { name: frm.doc.room },
-                                fieldname: ["price", "room_type"]
-                            },
-                            callback: function(room_data) {
-                                if (room_data.message) {
-                                    let room_rate = room_data.message.price;
-                                    console.log(room_rate)
-                                    let room_type = room_data.message.room_type;
-                                    let total_charges = room_rate * days;
-                                    
-                                    // Create Check Out document
-                                    frappe.model.with_doctype("Check Out", function() {
-                                        let checkout_doc = frappe.model.get_new_doc("Check Out");
-                                        checkout_doc.check_in = frm.doc.name;
-                                        checkout_doc.guest = frm.doc.guest_name;
-                                        checkout_doc.room = frm.doc.room;
-                                        checkout_doc.actual_check_out_time = checkout_date;
-                                        checkout_doc.days_stayed = frm.doc.nights;
-                                        // checkout_doc.sales_invoice_number = frm.doc.sales_invoice_number;
-                                        // checkout_doc.total_charges = total_charges;
-                                        // checkout_doc.payment_entry = frm.doc.payment_entry
-                                        
-                                        frappe.set_route("Form", "Check Out", checkout_doc.name);
-                                    });
-                                    
-                                    // Update room status to Available
-                                    
-                                }
-                            }
-                        });
-                    }
-                );
             }
+            
+            // Get default checkout time
+            const dtime = await frappe.db.get_single_value('Hotel Settings', 'default_check_out_time');
+            let default_checkout_time;
+            if(!dtime){
+                default_checkout_time = frappe.datetime.now_datetime();
+            } else {
+                let today = frappe.datetime.get_today();
+                default_checkout_time = moment(today + " " + dtime).format("YYYY-MM-DD HH:mm:ss");
+            }
+            
+            // Open modal to collect checkout data
+            let d = new frappe.ui.Dialog({
+                title: __('Check Out Guest'),
+                fields: [
+                    {
+                        label: __('Check In'),
+                        fieldname: 'check_in',
+                        fieldtype: 'Link',
+                        options: 'Check In',
+                        default: frm.doc.name,
+                        read_only: 1
+                    },
+                    {
+                        label: __('Guest'),
+                        fieldname: 'guest',
+                        fieldtype: 'Link',
+                        options: 'Hotel Guest',
+                        default: frm.doc.guest_name,
+                        read_only: 1
+                    },
+                    {
+                        label: __('Room'),
+                        fieldname: 'room',
+                        fieldtype: 'Link',
+                        options: 'Room',
+                        default: frm.doc.room,
+                        read_only: 1
+                    },
+                    {
+                        fieldtype: 'Column Break',
+                        fieldname: 'col_break_1'
+                    },
+                    {
+                        label: __('Days Stayed'),
+                        fieldname: 'days_stayed',
+                        fieldtype: 'Data',
+                        default: frm.doc.nights || '',
+                        read_only: 1
+                    },
+                    {
+                        label: __('Balance Due'),
+                        fieldname: 'balance_due',
+                        fieldtype: 'Currency',
+                        default: frm.doc.balance_due || 0,
+                        read_only: 1
+                    },
+                    {
+                        fieldtype: 'Section Break',
+                        fieldname: 'section_break_1',
+                        label: __('Check Out Details')
+                    },
+                    {
+                        label: __('Actual Check Out Time'),
+                        fieldname: 'actual_check_out_time',
+                        fieldtype: 'Datetime',
+                        default: default_checkout_time,
+                        reqd: 1
+                    },
+                    {
+                        fieldtype: 'Column Break',
+                        fieldname: 'col_break_2'
+                    },
+                    {
+                        label: __('Room Condition'),
+                        fieldname: 'room_condition',
+                        fieldtype: 'Select',
+                        options: 'Clean\nDirty\nMaintenance',
+                        default: 'Clean',
+                        reqd: 1
+                    },
+                    {
+                        label: __('Check Out By'),
+                        fieldname: 'check_out_by',
+                        fieldtype: 'Link',
+                        options: 'User',
+                        default: frappe.session.user,
+                        read_only: 1
+                    },
+                    {
+                        fieldtype: 'Section Break',
+                        fieldname: 'section_break_2'
+                    },
+                    {
+                        label: __('Notes'),
+                        fieldname: 'notes',
+                        fieldtype: 'Small Text'
+                    }
+                ],
+                primary_action_label: __('Check Out'),
+                primary_action: function(values) {
+                    d.hide();
+                    
+                    // Call Python method to create and submit checkout
+                    frappe.call({
+                        method: 'havano_hotel_management.api.create_and_submit_checkout',
+                        args: {
+                            check_in: values.check_in,
+                            actual_check_out_time: values.actual_check_out_time,
+                            room_condition: values.room_condition,
+                            notes: values.notes || '',
+                            check_out_by: values.check_out_by
+                        },
+                        freeze: true,
+                        freeze_message: __('Processing checkout...'),
+                        callback: function(r) {
+                            if (r.message && r.message.success) {
+                                frappe.show_alert({
+                                    message: r.message.message,
+                                    indicator: 'green'
+                                });
+                                frm.reload_doc();
+                            }
+                        },
+                        error: function(r) {
+                            frappe.show_alert({
+                                message: __('Error during checkout: {0}', [r.message || 'Unknown error']),
+                                indicator: 'red'
+                            });
+                            console.error('Checkout error:', r);
+                        }
+                    });
+                }
+            });
+            
+            d.show();
         }
-    })
-    
+    });
 }
 function extra_charges(frm) {
     // Create a new Sales Invoice with the guest as customer
@@ -687,22 +626,30 @@ function make_payment(frm){
             frappe.call({
                 method: 'havano_hotel_management.api.make_payment_entry',
                 args: {
-                    check_in: frm.doc.name,
-                    sales_invoice: values.sales_invoice,
                     payment_method: values.payment_method,
                     amount: values.amount,
                     payment_date: values.payment_date,
+                    check_in: frm.doc.name,
+                    sales_invoice: values.sales_invoice,
                     reference_no: values.reference_no,
                     reference_date: values.reference_date,
                     remarks: values.remarks
                 },
                 callback: function(r) {
                     if (r.message) {
-                        frappe.show_alert({
-                            message: __('Payment Entry {0} created successfully', 
-                                ['<a href="/app/payment-entry/' + r.message + '">' + r.message + '</a>']),
-                            indicator: 'green'
-                        });
+                        let payment_entry = r.message.payment_entry || r.message;
+                        if (typeof payment_entry === 'string') {
+                            frappe.show_alert({
+                                message: __('Payment Entry {0} created successfully', 
+                                    ['<a href="/app/payment-entry/' + payment_entry + '">' + payment_entry + '</a>']),
+                                indicator: 'green'
+                            });
+                        } else if (r.message.success) {
+                            frappe.show_alert({
+                                message: r.message.message || __('Payment Entry created successfully'),
+                                indicator: 'green'
+                            });
+                        }
                         // Reload to get updated amount_paid and balance_due from backend
                         frm.reload_doc();
                     }
@@ -903,14 +850,15 @@ function general_ledger(frm) {
     // Initial load
     load_general_ledger();
     
-    // Set up auto-refresh every 30 seconds
+    // Set up auto-refresh every 5 minutes (reduced from 50 seconds)
+    // Only refresh if form is not dirty and document exists
     let refresh_interval = setInterval(function() {
-        if (!frm.doc || frm.is_dirty()) {
-            // Don't refresh if the form is dirty (has unsaved changes)
+        if (!frm.doc || frm.is_dirty() || frm.is_new()) {
+            // Don't refresh if the form is dirty, new, or doesn't exist
             return;
         }
         load_general_ledger();
-    }, 50000); // 30 seconds
+    }, 300000); // 5 minutes (300000 ms)
     
     // Clear interval when the form is unloaded
     $(document).on('form-unload', function(e, unload_frm) {
@@ -1079,43 +1027,46 @@ function move_to_another_room(frm) {
                     ],
                     primary_action_label: __("Move"),
                     primary_action(values) {
-                        let old_room = frm.doc.room;
-                        let new_room = values.new_room;
-
+                        d.hide();
+                        
+                        // Use Python API to handle all room updates in a single transaction
                         frappe.call({
-                            method: "frappe.client.set_value",
+                            method: "havano_hotel_management.api.move_check_in_to_room",
                             args: {
-                                doctype: "Room",
-                                name: old_room,
-                                fieldname: { status: "Available", current_checkin: "" }
+                                check_in_name: frm.doc.name,
+                                new_room_name: values.new_room
                             },
-                            callback: function() {
-                                frappe.call({
-                                    method: "frappe.client.set_value",
-                                    args: {
-                                        doctype: "Room",
-                                        name: new_room,
-                                        fieldname: { status: "Occupied", current_checkin: frm.doc.name }
-                                    },
-                                    callback: function() {
-                                        frm.set_value("room", new_room);
-                                        frm.save("Update").then(() => {
-                                            frappe.show_alert({
-                                                message: __("Room changed successfully."),
-                                                indicator: "green"
-                                            });
-                                            frm.reload_doc();
-                                        });
-                                    }
-                                });
+                            freeze: true,
+                            freeze_message: __("Moving to new room..."),
+                            callback: function(r) {
+                                if (r.message && r.message.success) {
+                                    frappe.show_alert({
+                                        message: r.message.message || __("Room changed successfully."),
+                                        indicator: "green"
+                                    }, 5);
+                                    frm.reload_doc();
+                                } else {
+                                    frappe.show_alert({
+                                        message: r.message.message || r.message.error || __("Failed to move room."),
+                                        indicator: "red"
+                                    }, 5);
+                                }
+                            },
+                            error: function(r) {
+                                frappe.show_alert({
+                                    message: __("Error moving room: {0}", [r.message && r.message.exc ? r.message.exc : r.message || "Unknown error"]),
+                                    indicator: "red"
+                                }, 5);
                             }
                         });
-                        d.hide();
                     }
                 });
                 d.show();
             } else {
-                frappe.msgprint(__("No available rooms found."));
+                frappe.show_alert({
+                    message: __("No available rooms found."),
+                    indicator: "orange"
+                }, 5);
             }
         }
     });

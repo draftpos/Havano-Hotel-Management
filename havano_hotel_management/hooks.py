@@ -43,7 +43,9 @@ app_include_css = "/assets/havano_hotel_management/css/app.css"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"Sales Invoice": "public/js/custom_scripts/sales_invoice.js"
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -148,7 +150,10 @@ app_include_css = "/assets/havano_hotel_management/css/app.css"
 doc_events = {
     "Check In": {
         # "validate": "havano_hotel_management.api.validate_check_in",
-        "on_submit": "havano_hotel_management.api.create_sales_invoice"
+        "on_submit": [
+            "havano_hotel_management.api.create_sales_invoice",
+            "havano_hotel_management.api.redirect_to_hotel_dashboard_after_checkin"
+        ]
     },
     "Booking": {
         # "validate": "havano_hotel_management.api.validate_booking",
@@ -156,6 +161,9 @@ doc_events = {
     },
     "Customer": {
         "after_insert": "havano_hotel_management.api.create_hotel_guest_from_customer"
+    },
+    "Payment Entry": {
+        "on_submit": "havano_hotel_management.api.update_check_in_balance_on_payment_entry_submit"
     },
 }
 

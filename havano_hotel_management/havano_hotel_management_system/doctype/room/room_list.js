@@ -2,8 +2,8 @@
 
 frappe.listview_settings['Room'] = {
     onload: function(listview) {
-        check_overdue_checkouts();
-        update_status_counts();
+        // check_overdue_checkouts();
+        // update_status_counts();
         // Switch to the existing "Room View" kanban view on load
         // frappe.set_route("List", "Room", "Kanban", "Room View");
     
@@ -14,10 +14,10 @@ frappe.listview_settings['Room'] = {
     },
     refresh: function(listview) {
         // Add custom button to refresh status counts
-        update_status_counts();
+        // update_status_counts();
         
         // Then highlight overdue checkouts (after sorting)
-        highlight_overdue_checkouts();
+        // highlight_overdue_checkouts();
     },
     
 };

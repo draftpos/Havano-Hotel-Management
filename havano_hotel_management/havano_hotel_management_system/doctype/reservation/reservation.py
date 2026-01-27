@@ -18,7 +18,7 @@ class Reservation(Document):
             frappe.db.set_value("Room", self.room, "reservation", self.name, update_modified=False)
         if self.venue:
             frappe.db.set_value("Venue", self.venue, "status", "Reserved")
-            frappe.msgprint("Venue Reserved")
+            # frappe.msgprint("Venue Reserved")
     
     def on_cancel(self):
         """Make room available when reservation is cancelled"""
@@ -26,12 +26,20 @@ class Reservation(Document):
             room = frappe.get_doc("Room", self.room)
             # Only make available if status is Reserved (not Occupied) and reservation matches
             if room.status == "Reserved" and room.reservation == self.name:
-                frappe.db.set_value("Room", self.room, "status", "Available", update_modified=False)
-                frappe.db.set_value("Room", self.room, "reservation", "", update_modified=False)
-                frappe.msgprint(_("Room {0} is now available").format(self.room))
+                frappe.db.set_value("Room", self.room, {
+                    "status": "Available",
+                    "reservation": "",
+                    "current_guest": "",
+                    "checkout_date": None
+                }, update_modified=False)
+                # frappe.msgprint(_("Room {0} is now available").format(self.room))
             elif room.reservation == self.name:
-                # Clear reservation reference even if status is not Reserved
-                frappe.db.set_value("Room", self.room, "reservation", "", update_modified=False)
+                # Clear reservation reference, guest, and checkout date even if status is not Reserved
+                frappe.db.set_value("Room", self.room, {
+                    "reservation": "",
+                    "current_guest": "",
+                    "checkout_date": None
+                }, update_modified=False)
 
     def validate_reservation(self):
         # Ensure check-in date is before check-out date
@@ -44,14 +52,11 @@ class Reservation(Document):
             try:
                 room_status = frappe.db.get_value("Room", self.room, "status")
             except Exception as e:
-                frappe.log_error(message=str(e), title="Error Fetching Room Status")
+                frappe.log_error(title="Error Fetching Room Status", message=str(e))
                 frappe.throw(_("An error occurred while checking the room status. Please try again later."))
 
             # If the room is occupied, raise an error
-            if room_status == "Occupied":
-                frappe.throw(_("Room {0} is already occupied. Please select another room.").format(self.room))
-
-            elif room_status == "Reserved":
+            if room_status == "Reserved":
                 allow_overbooking = frappe.db.get_single_value("Hotel Settings", "allow_overbooking")
 
                 if not allow_overbooking:
@@ -136,7 +141,7 @@ class Reservation(Document):
             new_doc.insert(ignore_permissions=True)
             # frappe.msgprint("Desk Folio created")
         except Exception as e:
-            frappe.log_error(message=str(e), title="Error Creating Desk Folio")
+            frappe.log_error(title="Error Creating Desk Folio", message=str(e))
             frappe.throw(_("An error occurred while creating the Desk Folio. Please try again later."))
 
     # def validate(self):

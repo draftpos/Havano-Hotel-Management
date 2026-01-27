@@ -6,7 +6,7 @@ frappe.ui.form.on("Reservation", {
         frm.set_query("room", () => {
             return {
                 filters: {
-                    "status": ["not in", ["Occupied"]]
+                    "status": ["not in", ["Occupied", "Reserved"]]
                 }
             }
         })

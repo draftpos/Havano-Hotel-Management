@@ -84,65 +84,38 @@ frappe.ui.form.on("Check Out", {
     // },
     
     on_submit(frm){
+        // NOTE: Room and Check In updates are handled in create_and_submit_checkout() API
+        // This prevents duplicate updates when checkout is created programmatically
+        // Only show success message if checkout was submitted manually (not via API)
+        
+        // Check if this was created via API by checking if actual_checkout_date is already set on Check In
         frappe.call({
-            method: "frappe.client.set_value",
+            method: "frappe.client.get_value",
             args: {
-                doctype: "Room",
-                name: frm.doc.room,
-                fieldname: {
-                    "status": "Available",
-                    "current_checkin": "",
-                    "current_guest": "",
-                    "checkout_date": "",
-                    "checkout_status": "",
-                },
+                doctype: "Check In",
+                name: frm.doc.check_in,
+                fieldname: ["actual_checkout_date"]
             },
-            callback: function() {
-                frappe.call({
-                    method: "frappe.client.set_value",
-                    args: {
-                        doctype: "Check In",
-                        name: frm.doc.check_in,
-                        fieldname: {
-                            "actual_checkout_date": frm.doc.actual_check_out_time,
-                            "checkout_status": "Out"
-                            // "total_charge": frm.doc.total_charges,
-                            // "balance_due": frm.doc.balance_due
+            callback: function(r) {
+                // If actual_checkout_date is not set, this might be a manual submission
+                // But we still don't update Room here to avoid conflicts
+                // The Room should be updated via the API or manually by user
+                if (r.message && !r.message.actual_checkout_date) {
+                    // Only update Check In if it wasn't updated by API
+                    frappe.call({
+                        method: "frappe.client.set_value",
+                        args: {
+                            doctype: "Check In",
+                            name: frm.doc.check_in,
+                            fieldname: {
+                                "actual_checkout_date": frm.doc.actual_check_out_time,
+                                "checkout_status": "Out"
+                            }
                         }
-                    },
-                    callback: function(r) {
-                        if (r.message) {
-                            frappe.show_alert({
-                                message: __("Room {0} is now available", [frm.doc.room]),
-                                indicator: 'green'
-                            });
-                            // if(frm.doc.payment_entry){
-                            //     frappe.call({
-                            //         method: "frappe.client.set_value",
-                            //         args: {
-                            //             doctype: "Check In",
-                            //             name: frm.doc.check_in,
-                            //             fieldname: "payment_entry",
-                            //             value: frm.doc.payment_entry
-                            //         },
-                            //         callback: function(r) {
-                            //             if (r.message) {
-                            //                 frappe.show_alert({
-                            //                     message: __("Payment Entry Updated for checkin"),
-                            //                     indicator: 'green'
-                            //                 });
-                                            
-                            //             }
-                            //         }
-                            //     });
-                            // }
-                        }
-                    }
-                });
-               
+                    });
+                }
             }
         });
-
         
         frappe.show_alert({
             message: __("Guest checked out successfully"),

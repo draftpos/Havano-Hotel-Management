@@ -3,29 +3,10 @@
 
 frappe.ui.form.on("Room", {
 	refresh(frm) {
-        if(!frm.is_new()){
-            if(frm.doc.status == "Available"){
-                frm.set_value("current_checkin", "")
-                frm.save()
-            }
-            if(frm.doc.title != `${frm.doc.room_name} - ${frm.doc.status}`){
-                frm.set_value("title", `${frm.doc.room_name} - ${frm.doc.status}`);
-                frm.save()
-            }
-        }
+        // Title, current_checkin, and checkout_status are now calculated in Python
+        // No need to set them in JavaScript
+        
         frm.set_df_property("price", "read_only", 0);
-       
-        if (frm.doc.status === "Occupied" && frm.doc.checkout_date) {
-            const checkout_date = frappe.datetime.str_to_obj(frm.doc.checkout_date);
-            const today = frappe.datetime.get_today();
-            const today_obj = frappe.datetime.str_to_obj(today);
-            
-            if (checkout_date < today_obj) {
-                // Set checkout status to overdue
-                frm.set_value("checkout_status", "Overdue");
-                frm.save();
-            }
-        }
         if (frm.doc.status === "Reserved") {
             frm.set_df_property("status", "read_only", 0);
             frm.add_custom_button(__('Check In'), function() {
@@ -79,27 +60,11 @@ frappe.ui.form.on("Room", {
     status: function(frm) {
         if (frm.doc.status === "Reserved") {
             frm.set_df_property("status", "read_only", 0);
-        }else{
+        } else {
             frm.set_df_property("status", "read_only", 1);
         }
-        
-
-        if(frm.doc.status == "Available"){
-            frm.set_value("current_checkin", "")
-        }
-        if(frm.doc.title != `${frm.doc.room_name} - ${frm.doc.status}`){
-            frm.set_value("title", `${frm.doc.room_name} - ${frm.doc.status}`);
-            frm.save()
-        }
-    },
-    validate: function(frm){
-        if(frm.doc.status == "Available"){
-            frm.set_value("current_checkin", "")
-        }
-         if(frm.doc.title != `${frm.doc.room_name} - ${frm.doc.status}`){
-            frm.set_value("title", `${frm.doc.room_name} - ${frm.doc.status}`);
-            frm.save()
-        }
+        // Title, current_checkin, and checkout_status are calculated in Python
+        // They will be updated automatically on save
     }
 });
 
