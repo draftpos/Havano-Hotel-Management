@@ -54,7 +54,7 @@ frappe.pages['hotel-dashboard'].make_menu_buttons = function(page) {
 							border-radius: 4px;
 							padding: 3px 8px;
 							font-weight: 500;
-							font-size: 10px;
+							font-size: 14px;
 							height: 24px;
 							display: inline-flex;
 							align-items: center;
@@ -75,7 +75,7 @@ frappe.pages['hotel-dashboard'].make_menu_buttons = function(page) {
 							box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 						}
 						.page-actions.hotel-menu .btn-enterprise i {
-							font-size: 10px;
+							font-size: 14px;
 							opacity: 0.95;
 						}
 						.page-actions.hotel-menu .btn-enterprise.primary {
@@ -438,11 +438,11 @@ frappe.pages['hotel-dashboard'].create_reservation_dialog = function(selected_ro
 			fieldtype: "HTML",
 			fieldname: "current_booking_info",
 			options: `<div style="padding: 8px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin-bottom: 10px;">
-				<strong style="font-size: 11px; color: #856404;">Current Booking:</strong>
-				<div style="font-size: 10px; color: #856404; margin-top: 4px;">
+				<strong style="font-size: 15px; color: #856404;">Current Booking:</strong>
+				<div style="font-size: 14px; color: #856404; margin-top: 4px;">
 					${frappe.datetime.obj_to_str(curr_arrival_date).split(' ')[0]} to ${frappe.datetime.obj_to_str(curr_departure_date).split(' ')[0]}
 				</div>
-				<div style="font-size: 9px; color: #856404; margin-top: 2px;">
+				<div style="font-size: 13px; color: #856404; margin-top: 2px;">
 					Reservation dates must be outside this period.
 				</div>
 			</div>`
@@ -1696,59 +1696,59 @@ frappe.pages['hotel-dashboard'].make_stats_cards = function() {
 		<div class="dashboard-stats-cards" style="margin-bottom: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
 			<div class="stat-card" data-status="vacant" style="flex: 1; min-width: 80px; max-width: 100px; padding: 6px; background: #e8f5e9; border-radius: 4px; border: 1px solid #c8e6c9; cursor: pointer; transition: all 0.2s;">
 				<div style="display: flex; align-items: center; gap: 4px;">
-					<i class="fa fa-bed" style="font-size: 12px; color: #4caf50;"></i>
+					<i class="fa fa-bed" style="font-size: 16px; color: #4caf50;"></i>
 					<div>
-						<div style="font-size: 14px; font-weight: bold; color: #2e7d32; line-height: 1.2;" id="stat-vacant">0</div>
-						<div style="font-size: 9px; color: #666; line-height: 1.2;">Vacant</div>
+						<div style="font-size: 18px; font-weight: bold; color: #2e7d32; line-height: 1.2;" id="stat-vacant">0</div>
+						<div style="font-size: 13px; color: #666; line-height: 1.2;">Vacant</div>
 					</div>
 				</div>
 			</div>
 			<div class="stat-card" data-status="occupied" style="flex: 1; min-width: 80px; max-width: 100px; padding: 6px; background: #fff3e0; border-radius: 4px; border: 1px solid #ffcc80; cursor: pointer; transition: all 0.2s;">
 				<div style="display: flex; align-items: center; gap: 4px;">
-					<i class="fa fa-user" style="font-size: 12px; color: #ff9800;"></i>
+					<i class="fa fa-user" style="font-size: 16px; color: #ff9800;"></i>
 					<div>
-						<div style="font-size: 14px; font-weight: bold; color: #e65100; line-height: 1.2;" id="stat-occupied">0</div>
-						<div style="font-size: 9px; color: #666; line-height: 1.2;">Occupied</div>
+						<div style="font-size: 18px; font-weight: bold; color: #e65100; line-height: 1.2;" id="stat-occupied">0</div>
+						<div style="font-size: 13px; color: #666; line-height: 1.2;">Occupied</div>
 					</div>
 				</div>
 			</div>
 			<div class="stat-card" data-status="reserved" style="flex: 1; min-width: 80px; max-width: 100px; padding: 6px; background: #e3f2fd; border-radius: 4px; border: 1px solid #90caf9; cursor: pointer; transition: all 0.2s;">
 				<div style="display: flex; align-items: center; gap: 4px;">
-					<i class="fa fa-calendar-check-o" style="font-size: 12px; color: #2196f3;"></i>
+					<i class="fa fa-calendar-check-o" style="font-size: 16px; color: #2196f3;"></i>
 					<div>
-						<div style="font-size: 14px; font-weight: bold; color: #1565c0; line-height: 1.2;" id="stat-reserved">0</div>
-						<div style="font-size: 9px; color: #666; line-height: 1.2;">Reserved</div>
+						<div style="font-size: 18px; font-weight: bold; color: #1565c0; line-height: 1.2;" id="stat-reserved">0</div>
+						<div style="font-size: 13px; color: #666; line-height: 1.2;">Reserved</div>
 					</div>
 				</div>
 			</div>
 			<div class="stat-card" data-status="due-out" style="flex: 1; min-width: 80px; max-width: 100px; padding: 6px; background: #fce4ec; border-radius: 4px; border: 1px solid #f48fb1; cursor: pointer; transition: all 0.2s;">
 				<div style="display: flex; align-items: center; gap: 4px;">
-					<i class="fa fa-clock-o" style="font-size: 12px; color: #e91e63;"></i>
+					<i class="fa fa-clock-o" style="font-size: 16px; color: #e91e63;"></i>
 					<div>
-						<div style="font-size: 14px; font-weight: bold; color: #c2185b; line-height: 1.2;" id="stat-due-out">0</div>
-						<div style="font-size: 9px; color: #666; line-height: 1.2;">Due Out</div>
+						<div style="font-size: 18px; font-weight: bold; color: #c2185b; line-height: 1.2;" id="stat-due-out">0</div>
+						<div style="font-size: 13px; color: #666; line-height: 1.2;">Due Out</div>
 					</div>
 				</div>
 			</div>
 			<div class="stat-card" data-status="dirty" style="flex: 1; min-width: 80px; max-width: 100px; padding: 6px; background: #f3e5f5; border-radius: 4px; border: 1px solid #ce93d8; cursor: pointer; transition: all 0.2s;">
 				<div style="display: flex; align-items: center; gap: 4px;">
-					<i class="fa fa-exclamation-triangle" style="font-size: 12px; color: #9c27b0;"></i>
+					<i class="fa fa-exclamation-triangle" style="font-size: 16px; color: #9c27b0;"></i>
 					<div>
-						<div style="font-size: 14px; font-weight: bold; color: #7b1fa2; line-height: 1.2;" id="stat-dirty">0</div>
-						<div style="font-size: 9px; color: #666; line-height: 1.2;">Dirty</div>
+						<div style="font-size: 18px; font-weight: bold; color: #7b1fa2; line-height: 1.2;" id="stat-dirty">0</div>
+						<div style="font-size: 13px; color: #666; line-height: 1.2;">Dirty</div>
 					</div>
 				</div>
 			</div>
 			<div class="stat-card" data-status="all" style="flex: 1; min-width: 80px; max-width: 100px; padding: 6px; background: #eceff1; border-radius: 4px; border: 1px solid #b0bec5; cursor: pointer; transition: all 0.2s;">
 				<div style="display: flex; align-items: center; gap: 4px;">
-					<i class="fa fa-building" style="font-size: 12px; color: #607d8b;"></i>
+					<i class="fa fa-building" style="font-size: 16px; color: #607d8b;"></i>
 					<div>
-						<div style="font-size: 14px; font-weight: bold; color: #455a64; line-height: 1.2;" id="stat-all">0</div>
-						<div style="font-size: 9px; color: #666; line-height: 1.2;">All Rooms</div>
+						<div style="font-size: 18px; font-weight: bold; color: #455a64; line-height: 1.2;" id="stat-all">0</div>
+						<div style="font-size: 13px; color: #666; line-height: 1.2;">All Rooms</div>
 					</div>
 				</div>
 			</div>
-			<button id="refresh-dashboard-btn" class="btn btn-sm btn-default" style="height: 32px; padding: 4px 12px; font-size: 11px; margin-left: auto; display: flex; align-items: center; gap: 4px;" title="Refresh Dashboard">
+			<button id="refresh-dashboard-btn" class="btn btn-sm btn-default" style="height: 32px; padding: 4px 12px; font-size: 15px; margin-left: auto; display: flex; align-items: center; gap: 4px;" title="Refresh Dashboard">
 				<i class="fa fa-refresh"></i> Refresh
 			</button>
 		</div>
@@ -1817,8 +1817,8 @@ frappe.pages['hotel-dashboard'].make_filters = function() {
 					let filters_html = `
 						<div class="dashboard-filters" style="padding: 8px; background: #f5f5f5; border-radius: 4px; display: flex; gap: 6px; flex-wrap: wrap; align-items: end;">
 							<div style="flex: 1; min-width: 120px;">
-								<label style="font-size: 9px; color: #666; margin-bottom: 2px; display: block;">Status</label>
-								<select class="form-control input-sm" id="filter-status" style="height: 24px; font-size: 10px; padding: 2px 6px;">
+								<label style="font-size: 13px; color: #666; margin-bottom: 2px; display: block;">Status</label>
+								<select class="form-control input-sm" id="filter-status" style="height: 24px; font-size: 14px; padding: 2px 6px;">
 									<option value="">All Status</option>
 									<option value="Vacant">Vacant</option>
 									<option value="Occupied">Occupied</option>
@@ -1828,24 +1828,24 @@ frappe.pages['hotel-dashboard'].make_filters = function() {
 								</select>
 							</div>
 							<div style="flex: 1; min-width: 120px;">
-								<label style="font-size: 9px; color: #666; margin-bottom: 2px; display: block;">Room Type</label>
-								<select class="form-control input-sm" id="filter-room-type" style="height: 24px; font-size: 10px; padding: 2px 6px;">
+								<label style="font-size: 13px; color: #666; margin-bottom: 2px; display: block;">Room Type</label>
+								<select class="form-control input-sm" id="filter-room-type" style="height: 24px; font-size: 14px; padding: 2px 6px;">
 									${room_type_options}
 								</select>
 							</div>
 							<div style="flex: 1; min-width: 120px;">
-								<label style="font-size: 9px; color: #666; margin-bottom: 2px; display: block;">Floor</label>
-								<select class="form-control input-sm" id="filter-floor" style="height: 24px; font-size: 10px; padding: 2px 6px;">
+								<label style="font-size: 13px; color: #666; margin-bottom: 2px; display: block;">Floor</label>
+								<select class="form-control input-sm" id="filter-floor" style="height: 24px; font-size: 14px; padding: 2px 6px;">
 									${floor_options}
 								</select>
 							</div>
 							<div style="flex: 1; min-width: 120px;">
-								<label style="font-size: 9px; color: #666; margin-bottom: 2px; display: block;">Room Number</label>
-								<input type="text" class="form-control input-sm" id="filter-room-number" placeholder="Search..." style="height: 24px; font-size: 10px; padding: 2px 6px;">
+								<label style="font-size: 13px; color: #666; margin-bottom: 2px; display: block;">Room Number</label>
+								<input type="text" class="form-control input-sm" id="filter-room-number" placeholder="Search..." style="height: 24px; font-size: 14px; padding: 2px 6px;">
 							</div>
 							<div style="flex: 0 0 auto;">
-								<button class="btn btn-sm btn-default" id="btn-clear-filters" style="height: 24px; font-size: 10px; padding: 2px 8px; margin-top: 16px;">
-									<i class="fa fa-times" style="font-size: 9px;"></i> Clear
+								<button class="btn btn-sm btn-default" id="btn-clear-filters" style="height: 24px; font-size: 14px; padding: 2px 8px; margin-top: 16px;">
+									<i class="fa fa-times" style="font-size: 13px;"></i> Clear
 								</button>
 							</div>
 						</div>
@@ -1885,11 +1885,11 @@ frappe.pages['hotel-dashboard'].make_table = function() {
 			<style id="hotel-dashboard-table-styles">
 				#rooms-table th, #rooms-table td {
 					padding: 4px 6px !important;
-					font-size: 11px !important;
+					font-size: 15px !important;
 					line-height: 1.3 !important;
 				}
 				#rooms-table thead th {
-					font-size: 10px !important;
+					font-size: 14px !important;
 					font-weight: 600 !important;
 					padding: 5px 6px !important;
 				}
@@ -1900,7 +1900,7 @@ frappe.pages['hotel-dashboard'].make_table = function() {
 	let table_html = `
 		<div class="dashboard-table-container" style="margin-bottom: 10px;">
 			<div style="overflow-x: auto;">
-				<table class="table table-bordered table-hover" id="rooms-table" style="font-size: 11px;">
+				<table class="table table-bordered table-hover" id="rooms-table" style="font-size: 15px;">
 					<thead style="background: #f5f5f5;">
 						<tr>
 							<th style="width: 40px; text-align: center;">
@@ -1928,23 +1928,23 @@ frappe.pages['hotel-dashboard'].make_table = function() {
 			</div>
 			<div id="pagination-container" style="margin-top: 6px; display: flex; justify-content: space-between; align-items: center;">
 				<div style="display: flex; gap: 6px; align-items: center;">
-					<button class="btn btn-sm btn-default" id="btn-first-page" disabled style="height: 22px; font-size: 9px; padding: 2px 6px;">
-						<i class="fa fa-angle-double-left" style="font-size: 9px;"></i>
+					<button class="btn btn-sm btn-default" id="btn-first-page" disabled style="height: 22px; font-size: 13px; padding: 2px 6px;">
+						<i class="fa fa-angle-double-left" style="font-size: 13px;"></i>
 					</button>
-					<button class="btn btn-sm btn-default" id="btn-prev-page" disabled style="height: 22px; font-size: 9px; padding: 2px 6px;">
-						<i class="fa fa-angle-left" style="font-size: 9px;"></i>
+					<button class="btn btn-sm btn-default" id="btn-prev-page" disabled style="height: 22px; font-size: 13px; padding: 2px 6px;">
+						<i class="fa fa-angle-left" style="font-size: 13px;"></i>
 					</button>
-					<span id="page-info" style="font-size: 10px; padding: 0 6px;"></span>
-					<button class="btn btn-sm btn-default" id="btn-next-page" style="height: 22px; font-size: 9px; padding: 2px 6px;">
-						<i class="fa fa-angle-right" style="font-size: 9px;"></i>
+					<span id="page-info" style="font-size: 14px; padding: 0 6px;"></span>
+					<button class="btn btn-sm btn-default" id="btn-next-page" style="height: 22px; font-size: 13px; padding: 2px 6px;">
+						<i class="fa fa-angle-right" style="font-size: 13px;"></i>
 					</button>
-					<button class="btn btn-sm btn-default" id="btn-last-page" style="height: 22px; font-size: 9px; padding: 2px 6px;">
-						<i class="fa fa-angle-double-right" style="font-size: 9px;"></i>
+					<button class="btn btn-sm btn-default" id="btn-last-page" style="height: 22px; font-size: 13px; padding: 2px 6px;">
+						<i class="fa fa-angle-double-right" style="font-size: 13px;"></i>
 					</button>
 				</div>
 				<div style="display: flex; gap: 6px; align-items: center;">
-					<label style="font-size: 10px; margin: 0;">Rows per page:</label>
-					<select class="form-control input-sm" id="page-length-select" style="width: 60px; height: 22px; font-size: 10px; padding: 2px 4px;">
+					<label style="font-size: 14px; margin: 0;">Rows per page:</label>
+					<select class="form-control input-sm" id="page-length-select" style="width: 60px; height: 22px; font-size: 14px; padding: 2px 4px;">
 						<option value="20">20</option>
 						<option value="50">50</option>
 						<option value="100">100</option>
@@ -2539,21 +2539,21 @@ frappe.pages['hotel-dashboard'].render_table = function(data) {
 		
 		if (status === "Available") {
 			status_display = "Vacant";
-			status_badge_style = "background-color: #4caf50; color: white; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-weight: 500;";
+			status_badge_style = "background-color: #4caf50; color: white; padding: 1px 4px; border-radius: 2px; font-size: 13px; font-weight: 500;";
 		} else if (status === "Occupied") {
-			status_badge_style = "background-color: #ff9800; color: white; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-weight: 500;";
+			status_badge_style = "background-color: #ff9800; color: white; padding: 1px 4px; border-radius: 2px; font-size: 13px; font-weight: 500;";
 		} else if (status === "Due Out") {
 			status_display = "Due Out";
-			status_badge_style = "background-color: #e91e63; color: white; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-weight: 500;";
+			status_badge_style = "background-color: #e91e63; color: white; padding: 1px 4px; border-radius: 2px; font-size: 13px; font-weight: 500;";
 		} else if (status === "Reserved") {
-			status_badge_style = "background-color: #2196f3; color: white; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-weight: 500;";
+			status_badge_style = "background-color: #2196f3; color: white; padding: 1px 4px; border-radius: 2px; font-size: 13px; font-weight: 500;";
 		}
 		
 		// Add housekeeping status indicator
 		if (row.housekeeping_status === "Dirty") {
 			status_display += " (Dirty)";
 			if (!status_badge_style) {
-				status_badge_style = "background-color: #9c27b0; color: white; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-weight: 500;";
+				status_badge_style = "background-color: #9c27b0; color: white; padding: 1px 4px; border-radius: 2px; font-size: 13px; font-weight: 500;";
 			}
 		}
 		
@@ -2563,8 +2563,8 @@ frappe.pages['hotel-dashboard'].render_table = function(data) {
 		
 		// Add icons for reserved rooms
 		if (status === "Reserved" && row.reservation) {
-			status_html += ` <i class="fa fa-edit reservation-edit-icon" data-reservation="${frappe.utils.escape_html(row.reservation)}" data-room="${frappe.utils.escape_html(row.room_name)}" style="cursor: pointer; margin-left: 4px; color: #2196f3; font-size: 11px;" title="Edit Reservation"></i>`;
-			status_html += ` <i class="fa fa-times reservation-cancel-icon" data-reservation="${frappe.utils.escape_html(row.reservation)}" data-room="${frappe.utils.escape_html(row.room_name)}" style="cursor: pointer; margin-left: 4px; color: #f44336; font-size: 11px;" title="Cancel Reservation"></i>`;
+			status_html += ` <i class="fa fa-edit reservation-edit-icon" data-reservation="${frappe.utils.escape_html(row.reservation)}" data-room="${frappe.utils.escape_html(row.room_name)}" style="cursor: pointer; margin-left: 4px; color: #2196f3; font-size: 15px;" title="Edit Reservation"></i>`;
+			status_html += ` <i class="fa fa-times reservation-cancel-icon" data-reservation="${frappe.utils.escape_html(row.reservation)}" data-room="${frappe.utils.escape_html(row.room_name)}" style="cursor: pointer; margin-left: 4px; color: #f44336; font-size: 15px;" title="Cancel Reservation"></i>`;
 		}
 		
 		let row_html = `

@@ -342,9 +342,20 @@ frappe.ui.form.on("Check In", {
                     frappe.confirm(
                         __('Do you want to make payment for this check-in?'),
                         function() {
-                            make_payment(frm);
+                            // User selected "Yes" - make payment
+                            make_payment(frm, function() {
+                                // Redirect to hotel dashboard after successful payment
+                                frappe.set_route("hotel-dashboard");
+                            });
+                        },
+                        function() {
+                            // User selected "No" - redirect to hotel dashboard
+                            frappe.set_route("hotel-dashboard");
                         }
                     );
+                } else {
+                    // No sales invoice, redirect to hotel dashboard
+                    frappe.set_route("hotel-dashboard");
                 }
             }, 1500);
         });
@@ -569,7 +580,7 @@ function update_sales_invoice_payment_status(frm) {
     });
 }
 
-function make_payment(frm){
+function make_payment(frm, on_success_callback){
     let d = new frappe.ui.Dialog({
         title: __('Make Payment'),
         fields: [
@@ -639,20 +650,30 @@ function make_payment(frm){
                 callback: function(r) {
                     if (r.message) {
                         let payment_entry = r.message.payment_entry || r.message;
+                        let payment_success = false;
+                        
                         if (typeof payment_entry === 'string') {
                             frappe.show_alert({
                                 message: __('Payment Entry {0} created successfully', 
                                     ['<a href="/app/payment-entry/' + payment_entry + '">' + payment_entry + '</a>']),
                                 indicator: 'green'
                             });
+                            payment_success = true;
                         } else if (r.message.success) {
                             frappe.show_alert({
                                 message: r.message.message || __('Payment Entry created successfully'),
                                 indicator: 'green'
                             });
+                            payment_success = true;
                         }
+                        
                         // Reload to get updated amount_paid and balance_due from backend
-                        frm.reload_doc();
+                        frm.reload_doc().then(function() {
+                            // Call success callback if payment was successful and callback is provided
+                            if (payment_success && on_success_callback && typeof on_success_callback === 'function') {
+                                on_success_callback();
+                            }
+                        });
                     }
                 }
             });

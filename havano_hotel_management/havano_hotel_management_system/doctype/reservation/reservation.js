@@ -32,6 +32,12 @@ frappe.ui.form.on("Reservation", {
     },
     nights: function(frm) {
         set_check_out_date(frm)
+    },
+    on_submit(frm){
+        setTimeout(function() {
+            frappe.set_route("hotel-dashboard");
+        })
+        
     }
 });
 
