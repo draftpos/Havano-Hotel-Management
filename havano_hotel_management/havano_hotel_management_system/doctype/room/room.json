@@ -119,7 +119,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Checkout Status",
-   "options": "\nOverdue"
+   "options": "\nOverdue\nIn"
   },
   {
    "fieldname": "section_break_ftgu",
