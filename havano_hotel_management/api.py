@@ -2000,6 +2000,30 @@ def get_hotel_dashboard_url():
         }
 
 
+@frappe.whitelist()
+def is_restaurant_pos_app_installed():
+    """
+    Check if havano_restaurant_pos app is installed
+    Returns True if installed, False otherwise
+    """
+    try:
+        installed_apps = frappe.get_installed_apps()
+        is_installed = "havano_restaurant_pos" in installed_apps
+        
+        return {
+            "installed": is_installed
+        }
+    except Exception as e:
+        frappe.log_error(
+            title="Error Checking Restaurant POS App",
+            message=f"Error checking if havano_restaurant_pos is installed: {str(e)}\n{frappe.get_traceback()}"
+        )
+        return {
+            "installed": False,
+            "error": str(e)
+        }
+
+
 def redirect_to_hotel_dashboard_after_checkin(doc, method):
     """
     Hook function called after Check In is submitted

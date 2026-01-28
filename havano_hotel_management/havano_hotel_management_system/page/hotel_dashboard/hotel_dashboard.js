@@ -180,6 +180,18 @@ frappe.pages['hotel-dashboard'].make_menu_buttons = function(page) {
 	}, {
 		btn_class: "btn-enterprise"
 	});
+	
+	// Add separator
+	setTimeout(function() {
+		$(".page-actions").append('<div class="menu-separator"></div>');
+	}, 250);
+	
+	// Group 5: External Apps - Restaurant POS
+	page.add_button(`<i class="fa fa-cutlery"></i> <span>${__("Restaurant POS")}</span>`, function() {
+		me.handle_restaurant_pos();
+	}, {
+		btn_class: "btn-enterprise secondary"
+	});
 }
 
 frappe.pages['hotel-dashboard'].handle_check_in = function() {
@@ -2718,6 +2730,32 @@ frappe.pages['hotel-dashboard'].handle_cancel_reservation = function(reservation
 			});
 		}
 	);
+}
+
+frappe.pages['hotel-dashboard'].handle_restaurant_pos = function() {
+	let me = this;
+	
+	// Check if restaurant POS app is installed
+	frappe.call({
+		method: "havano_hotel_management.api.is_restaurant_pos_app_installed",
+		callback: function(r) {
+			if (r.message && r.message.installed) {
+				// Redirect to restaurant POS dashboard
+				window.location.href = "/dashboard";
+			} else {
+				frappe.show_alert({
+					message: __("Havano Restaurant POS app is not installed."),
+					indicator: "orange"
+				}, 5);
+			}
+		},
+		error: function(r) {
+			frappe.show_alert({
+				message: __("Unable to check Restaurant POS app status. Please contact your administrator."),
+				indicator: "red"
+			}, 5);
+		}
+	});
 }
 
 frappe.pages['hotel-dashboard'].handle_edit_reservation = function(reservation_name, room_name) {
