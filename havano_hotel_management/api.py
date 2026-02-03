@@ -1274,6 +1274,7 @@ def get_hotel_dashboard_stats():
             "reserved": 0,
             "due_out": 0,
             "dirty": 0,
+            "out_of_order": 0,
             "all": len(all_rooms)
         }
         
@@ -1289,6 +1290,10 @@ def get_hotel_dashboard_stats():
             # Count dirty rooms
             if room.housekeeping_status == "Dirty":
                 stats["dirty"] += 1
+            
+            # Count out of order rooms
+            if room.housekeeping_status == "Out of Order":
+                stats["out_of_order"] += 1
             
             # Count due out (rooms with check_out_date in the past, not today)
             # Use check_in check_out_date if available, otherwise fall back to room.checkout_date
@@ -1312,6 +1317,7 @@ def get_hotel_dashboard_stats():
             "reserved": 0,
             "due_out": 0,
             "dirty": 0,
+            "out_of_order": 0,
             "all": 0
         }
 
@@ -1354,6 +1360,9 @@ def get_hotel_dashboard_rooms(filters=None, page_length=20, page_start=0):
             elif filters["status"] == "Dirty":
                 conditions.append("room.housekeeping_status = %s")
                 values.append("Dirty")
+            elif filters["status"] == "Out of Order":
+                conditions.append("room.housekeeping_status = %s")
+                values.append("Out of Order")
         
         # Room type filter
         if filters.get("room_type"):

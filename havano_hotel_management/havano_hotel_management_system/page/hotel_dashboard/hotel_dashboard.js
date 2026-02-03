@@ -1752,6 +1752,15 @@ frappe.pages['hotel-dashboard'].make_stats_cards = function() {
 					</div>
 				</div>
 			</div>
+			<div class="stat-card" data-status="out-of-order" style="flex: 1; min-width: 80px; max-width: 100px; padding: 6px; background: #ffebee; border-radius: 4px; border: 1px solid #ef5350; cursor: pointer; transition: all 0.2s;">
+				<div style="display: flex; align-items: center; gap: 4px;">
+					<i class="fa fa-ban" style="font-size: 16px; color: #c62828;"></i>
+					<div>
+						<div style="font-size: 18px; font-weight: bold; color: #c62828; line-height: 1.2;" id="stat-out-of-order">0</div>
+						<div style="font-size: 13px; color: #666; line-height: 1.2;">Out of Order</div>
+					</div>
+				</div>
+			</div>
 			<div class="stat-card" data-status="all" style="flex: 1; min-width: 80px; max-width: 100px; padding: 6px; background: #eceff1; border-radius: 4px; border: 1px solid #b0bec5; cursor: pointer; transition: all 0.2s;">
 				<div style="display: flex; align-items: center; gap: 4px;">
 					<i class="fa fa-building" style="font-size: 16px; color: #607d8b;"></i>
@@ -1838,6 +1847,7 @@ frappe.pages['hotel-dashboard'].make_filters = function() {
 									<option value="Reserved">Reserved</option>
 									<option value="Due Out">Due Out</option>
 									<option value="Dirty">Dirty</option>
+									<option value="Out of Order">Out of Order</option>
 								</select>
 							</div>
 							<div style="flex: 1; min-width: 120px;">
@@ -2438,6 +2448,7 @@ frappe.pages['hotel-dashboard'].load_stats = function() {
 				$("#stat-reserved").text(r.message.reserved || 0);
 				$("#stat-due-out").text(r.message.due_out || 0);
 				$("#stat-dirty").text(r.message.dirty || 0);
+				$("#stat-out-of-order").text(r.message.out_of_order || 0);
 				$("#stat-all").text(r.message.all || 0);
 			}
 		}
@@ -2546,6 +2557,11 @@ frappe.pages['hotel-dashboard'].render_table = function(data) {
 			row_style = "background-color: #f3e5f5;"; // Light purple
 		}
 		
+		// Check for Out of Order (overrides other colors)
+		if (row.housekeeping_status === "Out of Order") {
+			row_style = "background-color: #ffebee;"; // Light red
+		}
+		
 		// Format status display
 		let status_display = status;
 		let status_badge_style = "";
@@ -2567,6 +2583,14 @@ frappe.pages['hotel-dashboard'].render_table = function(data) {
 			status_display += " (Dirty)";
 			if (!status_badge_style) {
 				status_badge_style = "background-color: #9c27b0; color: white; padding: 1px 4px; border-radius: 2px; font-size: 13px; font-weight: 500;";
+			}
+		}
+		
+		// Add Out of Order status indicator
+		if (row.housekeeping_status === "Out of Order") {
+			status_display += " (Out of Order)";
+			if (!status_badge_style) {
+				status_badge_style = "background-color: #c62828; color: white; padding: 1px 4px; border-radius: 2px; font-size: 13px; font-weight: 500;";
 			}
 		}
 		
@@ -2695,6 +2719,7 @@ frappe.pages['hotel-dashboard'].apply_status_filter = function(status) {
 		"reserved": "Reserved",
 		"due-out": "Due Out",
 		"dirty": "Dirty",
+		"out-of-order": "Out of Order",
 		"all": ""
 	};
 	
