@@ -12,6 +12,8 @@
   "reservation",
   "guest_name",
   "room",
+  "override_item",
+  "new_item",
   "allow_overbooking",
   "sales_invoice_number",
   "sales_invoice_status",
@@ -328,16 +330,28 @@
    "fieldtype": "Link",
    "label": "Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "default": "0",
+   "fieldname": "override_item",
+   "fieldtype": "Check",
+   "label": "Override Item"
+  },
+  {
+   "fieldname": "new_item",
+   "fieldtype": "Link",
+   "label": "New Item",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-25 00:58:13.550696",
+ "modified": "2026-03-12 11:40:06.569414",
  "modified_by": "Administrator",
  "module": "Havano Hotel Management System",
  "name": "Check In",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

@@ -10,6 +10,7 @@ def validate_check_in(doc, method):
 
 @frappe.whitelist()
 def create_sales_invoice(doc, method=None, charge=0):
+    print("the one --------------------")
     try:
         # If doc is a string (when called via whitelist), convert to JSON
         if isinstance(doc, str):
@@ -48,11 +49,15 @@ def create_sales_invoice(doc, method=None, charge=0):
         si.due_date = doc.check_out_date
         si.company = company
         si.debit_to = debit_to
+
+        item_code = doc.new_item if doc.new_item else room.room_item
+
+        print(f"Using item code: {item_code}, room item: {room.room_item}, new item: {doc.new_item}")
         
         # Add item
         si.append("items", {
-            "item_code": room.room_item,
-            "item_name": room.room_item,
+            "item_code": item_code,
+            "item_name": item_code,
             "description": doc.name,
             "qty": 1,
             "rate": amount,

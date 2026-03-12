@@ -175,7 +175,18 @@ doc_events = {
 }
 
 fixtures = [
-    "Custom Field"
+    {
+        "dt": "Custom Field",
+        "filters": [
+            ["module", "=", "Havano Hotel Management System"]
+        ]
+    },
+    {
+        "dt": "Client Script",
+        "filters": [
+            ["module", "=", "Havano Hotel Management System"]
+        ]
+    }
 ]
 # Scheduled Tasks
 # ---------------

@@ -224,10 +224,12 @@ class CheckIn(Document):
             #si.set_warehouse = "Stores - H"
             
             # room_item = frappe.db.get_value("Room", self.room, "room_item")
+            item_code = self.new_item if self.new_item else room.room_item
+            print(f"Using item code: {item_code}" and f"room item: {room.room_item}" and f"new item: {self.new_item}")
             # Add item
             si.append("items", {
-                "item_code": room.room_item, # "Room Charge",
-                "item_name": room.room_item,
+                "item_code": item_code, # "Room Charge",
+                "item_name": item_code,
                 "description": self.name,
                 "qty": self.nights,
                 "rate": room.price,
