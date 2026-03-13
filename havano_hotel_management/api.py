@@ -2286,3 +2286,32 @@ def update_room_status_on_checkout_submit(doc, method):
             title="Error Updating Room Status on Check Out Submit",
             message=f"Error updating room status for Check Out {doc.name}: {str(e)}\n{frappe.get_traceback()}"
         )
+
+import frappe
+
+import frappe
+
+@frappe.whitelist()
+def get_item_price(item_id, price_list=None):
+    """
+    Returns the price of an item for a given price list.
+    If no price_list is passed, defaults to Standard Selling.
+    """
+    if not price_list:
+        price_list = "Standard Selling"
+
+    price_doc = frappe.get_all(
+        "Item Price",
+        filters={
+            "item_code": item_id,
+            "price_list": price_list
+        },
+        fields=["price_list_rate"],
+        order_by="modified desc",
+        limit_page_length=1
+    )
+    print(price_doc)
+    
+    if price_doc:
+        return price_doc[0]["price_list_rate"]
+    return 0
