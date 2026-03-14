@@ -66,6 +66,15 @@ frappe.ui.form.on("Check In", {
             frm.set_value("balance_due", frm.doc.total_charge - frm.doc.amount_paid);
         }
     },
+    get_total_guests: function(frm) {
+    if(frm.doc.other_guest && frm.doc.other_guest.length > 0) {
+        console.log('Calculating total guests: main guest + other guests = 1 +', frm.doc.other_guest.length);
+        return 1 + frm.doc.other_guest.length; 
+
+
+    }
+    return 1; // just the main guest
+},
     price_list: function(frm) {
         if(frm.doc.price_list && frm.doc.room) {
             // Get the item code from the room
@@ -90,7 +99,8 @@ frappe.ui.form.on("Check In", {
                                 
                                 // Calculate total charge based on nights and price list rate
                                 if(frm.doc.nights) {
-                                    let total = r.message.price_list_rate * frm.doc.nights;
+                                    let total_guests = frm.events.get_total_guests(frm);
+                                    let total = frm.doc.price_list_rate * frm.doc.nights * total_guests;
                                     frm.set_value("total_charge", total);
                                                                     }
                             } else {
@@ -98,7 +108,9 @@ frappe.ui.form.on("Check In", {
                                 if (room_data && room_data.price) {
                                     frm.set_value("price_list_rate", room_data.price);
                                     if(frm.doc.nights) {
-                                        let total = room_data.price * frm.doc.nights;
+
+                                        let total_guests = frm.events.get_total_guests(frm);
+                                        let total = room_data.price * frm.doc.nights * total_guests;
                                         frm.set_value("total_charge", total);
                                     }
                                 } else {
@@ -113,7 +125,8 @@ frappe.ui.form.on("Check In", {
                     if (room_data && room_data.price) {
                         frm.set_value("price_list_rate", room_data.price);
                         if(frm.doc.nights) {
-                            let total = room_data.price * frm.doc.nights;
+                            let total_guests = frm.events.get_total_guests(frm);
+                            let total = room_data.price * frm.doc.nights * total_guests;
                             frm.set_value("total_charge", total);
                         }
                     } else {
@@ -130,14 +143,16 @@ frappe.ui.form.on("Check In", {
             return new Promise(resolve => {
                 frappe.db.get_value("Room", frm.doc.room, "price", function(data) {
                     if(data && frm.doc.price_list_rate) {
-                        let total = frm.doc.price_list_rate * frm.doc.nights;
+                        let total_guests = frm.events.get_total_guests(frm);
+                        let total = frm.doc.price_list_rate * frm.doc.nights * total_guests;
                         frm.set_value("total_charge", total);
                         
                         // Now update the balance_due after total_charge is set
                         resolve();
                     }
                     else if(data && data.price) {
-                        let total = data.price * frm.doc.nights;
+                        let total_guests = frm.events.get_total_guests(frm);
+                        let total = data.price * frm.doc.nights * total_guests;
                         frm.set_value("total_charge", total);
                         
                         // Now update the balance_due after total_charge is set
@@ -276,7 +291,8 @@ frappe.ui.form.on("Check In", {
                                             frm.set_value("price_list_rate", r.message.price);
                                             
                                             if(frm.doc.nights) {
-                                                let total = r.message.price * frm.doc.nights;
+                                                let total_guests = frm.events.get_total_guests(frm);
+                                                let total = r.message.price * frm.doc.nights * total_guests;
                                                 frm.set_value("total_charge", total);
                                                 
                                             }
@@ -290,7 +306,8 @@ frappe.ui.form.on("Check In", {
                                 frm.set_value("price_list_rate", r.message.price);
                                 
                                 if(frm.doc.nights) {
-                                    let total = r.message.price * frm.doc.nights;
+                                    let total_guests = frm.events.get_total_guests(frm);
+                                    let total = r.message.price * frm.doc.nights * total_guests;
                                     frm.set_value("total_charge", total);
                                     
                                 }

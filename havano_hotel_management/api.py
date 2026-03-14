@@ -10,7 +10,6 @@ def validate_check_in(doc, method):
 
 @frappe.whitelist()
 def create_sales_invoice(doc, method=None, charge=0):
-    print("the one --------------------")
     try:
         # If doc is a string (when called via whitelist), convert to JSON
         if isinstance(doc, str):
@@ -41,7 +40,16 @@ def create_sales_invoice(doc, method=None, charge=0):
         
         # Get debit account
         debit_to = frappe.get_cached_value("Company", company, "default_receivable_account")
-        
+
+        def count_guests_in_doc(doc):
+            if isinstance(doc, str):
+                doc = frappe.parse_json(doc)
+
+            guests = doc.get("other_guest")  # don’t default yet
+            if not guests:
+                return 0  # covers None, empty list, or missing key
+            return len(guests)
+                    
         # Create sales invoice
         si = frappe.new_doc("Sales Invoice")
         si.customer = customer
@@ -51,6 +59,8 @@ def create_sales_invoice(doc, method=None, charge=0):
         si.debit_to = debit_to
 
         item_code = doc.new_item if doc.new_item else room.room_item
+        qty = (int(doc.nights) if doc.nights else 0) + count_guests_in_doc(doc)
+        print(f"Calculated qty: {qty} (nights: {doc.nights}, guests: {count_guests_in_doc(doc)})")
 
         print(f"Using item code: {item_code}, room item: {room.room_item}, new item: {doc.new_item}")
         
@@ -59,8 +69,8 @@ def create_sales_invoice(doc, method=None, charge=0):
             "item_code": item_code,
             "item_name": item_code,
             "description": doc.name,
-            "qty": 1,
-            "rate": amount,
+            "qty": qty,
+            "rate": doc.price_list_rate,
             "amount": amount,
             "income_account": income_account,
             "cost_center": cost_center,
@@ -2229,68 +2239,74 @@ def redirect_to_hotel_dashboard_after_checkin(doc, method):
             message=f"Error for Check In {doc.name}: {str(e)}\n{frappe.get_traceback()}"
         )
 
-
 def update_room_status_on_checkin_submit(doc, method):
+    print("update_room_status_on_checkin_submit called-----------------------------")
     """
-    Hook function called after Check In is submitted
-    Updates room status to 'Occupied' and sets related fields
+    Updates all rooms for main guest + other guests to 'Occupied'
     """
     try:
-        if not doc.room:
-            return
-        
-        # Import the helper function to update room fields properly
         from havano_hotel_management.havano_hotel_management_system.doctype.room.room import update_room_fields
-        
-        # Update room status to Occupied and set related fields
-        update_room_fields(doc.room, {
-            "status": "Occupied",
-            "current_checkin": doc.name,
-            "current_guest": doc.guest_name,
-            "checkout_date": doc.check_out_date
-        })
-        
-        frappe.logger().info(f"Room {doc.room} status updated to Occupied after Check In {doc.name} submission")
-        
+
+        # List of rooms: main + other guests
+        rooms_to_update = []
+
+        if doc.room:
+            rooms_to_update.append(doc.room)
+
+        if hasattr(doc, "other_guest") and doc.other_guest:
+            for guest_row in doc.other_guest:
+                if guest_row.room:
+                    rooms_to_update.append(guest_row.room)
+
+        # Update all rooms
+        for room_name in rooms_to_update:
+            update_room_fields(room_name, {
+                "status": "Occupied",
+                "current_checkin": doc.name,
+                "current_guest": doc.guest_name,  
+                "checkout_date": doc.check_out_date
+            })
+            frappe.logger().info(f"Room {room_name} marked Occupied for Check In {doc.name}")
+
     except Exception as e:
         frappe.log_error(
             title="Error Updating Room Status on Check In Submit",
             message=f"Error updating room status for Check In {doc.name}: {str(e)}\n{frappe.get_traceback()}"
         )
 
-
 def update_room_status_on_checkout_submit(doc, method):
     """
-    Hook function called after Check Out is submitted
-    Updates room status to 'Available' and clears related fields
+    Updates all rooms for main guest + other guests to 'Available' on Check Out
     """
     try:
-        if not doc.room:
-            return
-        
-        # Import the helper function to update room fields properly
         from havano_hotel_management.havano_hotel_management_system.doctype.room.room import update_room_fields
-        
-        # Update room status to Available and clear related fields
-        update_room_fields(doc.room, {
-            "status": "Available",
-            "current_checkin": "",
-            "current_guest": "",
-            "checkout_date": None
-        })
-        
-        frappe.logger().info(f"Room {doc.room} status updated to Available after Check Out {doc.name} submission")
-        
+
+        # List of rooms: main + other guests
+        rooms_to_update = []
+
+        if doc.room:
+            rooms_to_update.append(doc.room)
+
+        if hasattr(doc, "other_guest") and doc.other_guest:
+            for guest_row in doc.other_guest:
+                if guest_row.room:
+                    rooms_to_update.append(guest_row.room)
+
+        # Update all rooms
+        for room_name in rooms_to_update:
+            update_room_fields(room_name, {
+                "status": "Available",
+                "current_checkin": "",
+                "current_guest": "",
+                "checkout_date": None
+            })
+            frappe.logger().info(f"Room {room_name} marked Available for Check Out {doc.name}")
+
     except Exception as e:
         frappe.log_error(
             title="Error Updating Room Status on Check Out Submit",
             message=f"Error updating room status for Check Out {doc.name}: {str(e)}\n{frappe.get_traceback()}"
         )
-
-import frappe
-
-import frappe
-
 @frappe.whitelist()
 def get_item_price(item_id, price_list=None):
     """
