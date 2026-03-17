@@ -2284,13 +2284,21 @@ def update_room_status_on_checkout_submit(doc, method):
         # List of rooms: main + other guests
         rooms_to_update = []
 
+        # ✅ Grab room from current doc
         if doc.room:
             rooms_to_update.append(doc.room)
 
-        if hasattr(doc, "other_guest") and doc.other_guest:
-            for guest_row in doc.other_guest:
-                if guest_row.room:
+        # ✅ Make sure checkout has a linked check-in
+        if getattr(doc, "check_in", None):
+            check_in_doc = frappe.get_doc("Check In", doc.check_in)
+
+            # ✅ Add rooms from check-in's other_guest table
+            for guest_row in getattr(check_in_doc, "other_guest", []):
+                if getattr(guest_row, "room", None):
                     rooms_to_update.append(guest_row.room)
+
+        for i in rooms_to_update:
+            print(i)
 
         # Update all rooms
         for room_name in rooms_to_update:

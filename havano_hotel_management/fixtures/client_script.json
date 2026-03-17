@@ -3,11 +3,22 @@
   "docstatus": 0,
   "doctype": "Client Script",
   "dt": "Check In",
-  "enabled": 1,
-  "modified": "2026-03-12 11:42:16.577985",
+  "enabled": 0,
+  "modified": "2026-03-13 08:51:23.089729",
   "module": "Havano Hotel Management System",
   "name": "check in new item",
   "script": "frappe.ui.form.on(\"Check In\", {\n    refresh(frm) {\n        toggle_new_item(frm);\n    },\n\n    override_item(frm) {\n        toggle_new_item(frm);\n    }\n});\n\nfunction toggle_new_item(frm) {\n    if (frm.doc.override_item) {\n        frm.set_df_property(\"new_item\", \"hidden\", 0);\n    } else {\n        frm.set_df_property(\"new_item\", \"hidden\", 1);\n        frm.set_value(\"new_item\", null);\n    }\n}",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Check In",
+  "enabled": 1,
+  "modified": "2026-03-13 09:04:28.602954",
+  "module": "Havano Hotel Management System",
+  "name": "mmmm",
+  "script": "frappe.ui.form.on(\"Check In\", {\n    refresh(frm) {\n        toggle_new_item(frm);\n    },\n\n    override_item(frm) {\n        toggle_new_item(frm);\n    },\n\n    new_item(frm) {\n        if (frm.doc.new_item) {\n            frappe.call({\n                method: \"havano_hotel_management.api.get_item_price\",\n                args: {\n                    item_id: frm.doc.new_item,\n                    price_list: frm.doc.price_list  // pass selected price_list field\n                },\n                callback: function(r) {\n                    if (r.message !== undefined) {\n                        frm.set_value(\"price_list_rate\", r.message);\n                    }\n                }\n            });\n        } else {\n            frm.set_value(\"price_list_rate\", 0);\n        }\n    },\n\n    price_list(frm) {\n        // if user changes price_list after selecting item, update rate\n        if (frm.doc.new_item) {\n            frappe.call({\n                method: \"havano_hotel_management.api.get_item_price\",\n                args: {\n                    item_id: frm.doc.new_item,\n                    price_list: frm.doc.price_list\n                },\n                callback: function(r) {\n                    if (r.message !== undefined) {\n                        frm.set_value(\"price_list_rate\", r.message);\n                    }\n                }\n            });\n        }\n    }\n});\n\nfunction toggle_new_item(frm) {\n    if (frm.doc.override_item) {\n        frm.set_df_property(\"new_item\", \"hidden\", 0);\n    } else {\n        frm.set_df_property(\"new_item\", \"hidden\", 1);\n        frm.set_value(\"new_item\", null);\n        frm.set_value(\"price_list_rate\", 0);\n    }\n}",
   "view": "Form"
  }
 ]
