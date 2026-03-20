@@ -1124,7 +1124,7 @@ def create_and_submit_checkout(room,check_in, actual_check_out_time, housekeepin
                     
                     return {
                         "success": True,
-                        "checkout_name": None,
+                        "checkout_name": check_in_doc.name,
                         "message": _("Other guest {0} checked out successfully without billing.").format(guest_row.guest)
                     }
 
