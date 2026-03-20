@@ -914,6 +914,7 @@ frappe.pages['hotel-dashboard'].proceed_with_checkout = function(selected_room) 
 							frappe.call({
 								method: "havano_hotel_management.api.create_and_submit_checkout",
 								args: {
+									room:values.room,
 									check_in: values.check_in,
 									actual_check_out_time: values.actual_check_out_time,
 									housekeeping_status: values.housekeeping_status,

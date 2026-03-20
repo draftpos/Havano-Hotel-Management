@@ -1091,14 +1091,45 @@ def get_total_balance(guest_name=None, company=None, posting_date=None):
         )[0][0]
         return flt(balance)
 
+from frappe.utils import now_datetime
 
 @frappe.whitelist()
-def create_and_submit_checkout(check_in, actual_check_out_time, housekeeping_status, notes=None, check_out_by=None):
+def create_and_submit_checkout(room,check_in, actual_check_out_time, housekeeping_status, notes=None, check_out_by=None):
+    print(f" check in {check_in} and room {room}")
     """
     Create and submit a Check Out document from Check In
     Also updates Check In and Room status
     """
     try:
+        check_in_doc = frappe.get_doc("Check In", check_in)
+
+        # 1️⃣ Check if the room is in other_guest child table
+        if hasattr(check_in_doc, "other_guest") and check_in_doc.other_guest:
+            for guest_row in check_in_doc.other_guest:
+                if guest_row.room == room:
+                    # Just mark this guest row as checked out, no billing
+                    guest_row.check_out_datetime = actual_check_out_time or now_datetime()
+                    check_in_doc.save()
+                    frappe.msgprint(_("Other guest {0} checked out successfully without billing.").format(guest_row.guest))
+                    
+                    # Update room status to Available
+                    from havano_hotel_management.havano_hotel_management_system.doctype.room.room import update_room_fields
+                    update_room_fields(room, {
+                        "status": "Available",
+                        "current_checkin": "",
+                        "current_guest": "",
+                        "checkout_date": None,
+                        "housekeeping_status": housekeeping_status
+                    })
+                    
+                    return {
+                        "success": True,
+                        "checkout_name": None,
+                        "message": _("Other guest {0} checked out successfully without billing.").format(guest_row.guest)
+                    }
+
+        
+
         # Check if checkout already exists
         existing_checkout = frappe.db.exists("Check Out", {"check_in": check_in})
         if existing_checkout:
@@ -2247,33 +2278,37 @@ def update_room_status_on_checkin_submit(doc, method):
     try:
         from havano_hotel_management.havano_hotel_management_system.doctype.room.room import update_room_fields
 
-        # List of rooms: main + other guests
-        rooms_to_update = []
-
+        # Main guest room
         if doc.room:
-            rooms_to_update.append(doc.room)
-
-        if hasattr(doc, "other_guest") and doc.other_guest:
-            for guest_row in doc.other_guest:
-                if guest_row.room:
-                    rooms_to_update.append(guest_row.room)
-
-        # Update all rooms
-        for room_name in rooms_to_update:
-            update_room_fields(room_name, {
+            update_room_fields(doc.room, {
                 "status": "Occupied",
                 "current_checkin": doc.name,
                 "current_guest": doc.guest_name,  
                 "checkout_date": doc.check_out_date
             })
-            frappe.logger().info(f"Room {room_name} marked Occupied for Check In {doc.name}")
+            frappe.logger().info(f"Room {doc.room} marked Occupied for Check In {doc.name}")
+
+        # Other guest rooms
+        if hasattr(doc, "other_guest") and doc.other_guest:
+            rooms_to_update = []
+            for guest_row in doc.other_guest:
+                if guest_row.room:
+                    rooms_to_update.append({"room": guest_row.room, "guest": guest_row.guest})
+
+            for room_info in rooms_to_update:
+                update_room_fields(room_info["room"], {
+                    "status": "Occupied",
+                    "current_checkin": doc.name,
+                    "current_guest": room_info["guest"],
+                    "checkout_date": doc.check_out_date
+                })
+                frappe.logger().info(f"Room {room_info['room']} marked Occupied for Check In {doc.name}")
 
     except Exception as e:
         frappe.log_error(
             title="Error Updating Room Status on Check In Submit",
             message=f"Error updating room status for Check In {doc.name}: {str(e)}\n{frappe.get_traceback()}"
         )
-
 def update_room_status_on_checkout_submit(doc, method):
     """
     Updates all rooms for main guest + other guests to 'Available' on Check Out
