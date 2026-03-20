@@ -59,7 +59,7 @@ def create_sales_invoice(doc, method=None, charge=0):
         si.debit_to = debit_to
 
         item_code = doc.new_item if doc.new_item else room.room_item
-        qty = (int(doc.nights) if doc.nights else 0) + count_guests_in_doc(doc)
+        qty = (int(doc.nights) if doc.nights else 0) * count_guests_in_doc(doc)
         print(f"Calculated qty: {qty} (nights: {doc.nights}, guests: {count_guests_in_doc(doc)})")
 
         print(f"Using item code: {item_code}, room item: {room.room_item}, new item: {doc.new_item}")
@@ -2319,13 +2319,21 @@ def update_room_status_on_checkout_submit(doc, method):
         # List of rooms: main + other guests
         rooms_to_update = []
 
+        # ✅ Grab room from current doc
         if doc.room:
             rooms_to_update.append(doc.room)
 
-        if hasattr(doc, "other_guest") and doc.other_guest:
-            for guest_row in doc.other_guest:
-                if guest_row.room:
+        # ✅ Make sure checkout has a linked check-in
+        if getattr(doc, "check_in", None):
+            check_in_doc = frappe.get_doc("Check In", doc.check_in)
+
+            # ✅ Add rooms from check-in's other_guest table
+            for guest_row in getattr(check_in_doc, "other_guest", []):
+                if getattr(guest_row, "room", None):
                     rooms_to_update.append(guest_row.room)
+
+        for i in rooms_to_update:
+            print(i)
 
         # Update all rooms
         for room_name in rooms_to_update:
