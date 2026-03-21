@@ -183,7 +183,7 @@ frappe.ui.form.on("Check In", {
         }
         if(frm.is_new()){
             frm.set_value("check_in_date", frappe.datetime.now_datetime());
-            frm.set_value("check_in_by", frappe.session.user_fullname)
+            frm.set_value("check_in_by", frappe.session.user)
         }
         if(frm.doc.docstatus === 1 && !frm.doc.actual_checkout_date) {
             // Show checkout button only if the document is submitted
