@@ -59,7 +59,7 @@ def create_sales_invoice(doc, method=None, charge=0):
         si.debit_to = debit_to
 
         item_code = doc.new_item if doc.new_item else room.room_item
-        qty = (int(doc.nights) if doc.nights else 0) * count_guests_in_doc(doc)
+        qty = (int(doc.nights) if doc.nights else 0) * max(1, count_guests_in_doc(doc))
         print(f"Calculated qty: {qty} (nights: {doc.nights}, guests: {count_guests_in_doc(doc)})")
 
         print(f"Using item code: {item_code}, room item: {room.room_item}, new item: {doc.new_item}")
